@@ -27,7 +27,7 @@ function drawRoom(element, room, characterId, outfit = 'none', clean = 100) {
   element.innerHTML = '<div class="habitat-layer" aria-hidden="true">' + habitatMarkup(characterId) + '</div><div class="room-window"><span>☁</span></div><div class="room-floor"></div><div class="room-rug"></div><div class="room-furniture">' + furnitureArt[room.furniture] + '</div><span class="room-ornament"></span><img class="room-character" alt=""><img class="room-character room-clothes" alt="" hidden><img class="room-character room-dirt" alt="" hidden><span class="room-plaque"></span>';
   const clothes = element.querySelector('.room-clothes');
   outfit = outfitId(outfit);
-  if (outfit !== 'none') { clothes.src = outfitUrl(characterId,outfit); clothes.hidden = characterId === 'chiikawa'; }
+  if (outfit !== 'none'&&!isCompositeOutfit(characterId,outfit)) { clothes.src = outfitUrl(characterId,outfit); clothes.hidden = false; }
   element.querySelector('.room-ornament').textContent = { plant: '🪴', bear: '🧸', lamp: '💡' }[room.ornament];
   const image = element.querySelector('img');
   paintCharacter(image,characterId,outfit);
@@ -141,9 +141,9 @@ window.playMeal = (action) => {
 };
 $('#skipMeal').addEventListener('click', finishMeal);
 document.addEventListener('keydown', (event) => {
-  const overlay = !$('#mealOverlay').hidden ? $('#mealOverlay') : !$('#visitOverlay').hidden ? $('#visitOverlay') : null;
+  const overlay = !$('#mealOverlay').hidden ? $('#mealOverlay') : !$('#visitOverlay').hidden ? $('#visitOverlay') : !$('#discoveryOverlay').hidden ? $('#discoveryOverlay') : null;
   if (!overlay) return;
-  if (event.key === 'Escape') { event.preventDefault(); mealActive ? finishMeal() : closeVisit(); }
+  if (event.key === 'Escape') { event.preventDefault(); mealActive ? finishMeal() : overlay.id==='discoveryOverlay'?closeScene('#discoveryOverlay'):closeVisit(); }
   if (event.key === 'Tab') {
     const buttons = [...overlay.querySelectorAll('button,a[href],iframe')].filter(node => node.getClientRects().length), first = buttons[0], last = buttons.at(-1);
     if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }

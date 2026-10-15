@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="wardrobe.css">
   <link rel="stylesheet" href="art.css">
   <link rel="stylesheet" href="v5.css">
+  <link rel="stylesheet" href="v6.css">
   <title>치이카와 다마고치</title>
 </head>
 <body>
@@ -27,6 +28,7 @@
         <div class="home-tools"><span id="homeLabel">치이카와의 집</span><button id="testMoney">테스트 별 +10,000</button></div>
         <div class="world" id="world">
           <div class="habitat-layer" id="homeHabitat" aria-hidden="true"></div>
+          <div class="home-placed-decor" id="homePlacedDecor" aria-hidden="true"></div>
           <div class="sun">☀</div><div class="cloud cloud-one">☁</div><div class="cloud cloud-two">☁</div>
           <div class="sparkle sparkle-one">✿</div><div class="sparkle sparkle-two">✿</div>
           <div class="speech" id="speech" aria-live="polite">같이 놀자!</div>
@@ -48,12 +50,14 @@
         </div>
         <div class="section-heading"><h2>오늘의 돌봄</h2><small>누르면 바로 반응해요</small></div>
         <details class="closet card"><summary>옷 입히기 <span id="wearingLabel">기본 모습</span></summary><div id="outfitShop" class="outfit-shop"></div></details>
+        <button class="party-button" id="danceButton">♪ 파자마 파티 춤</button>
         <div class="care-grid">
           <button class="care-button" data-action="rice"><span>🍙</span><b>주먹밥</b><small>든든하게</small></button>
           <button class="care-button" data-action="bath"><span>🛁</span><b>목욕</b><small>꼬질꼬질할 때</small></button>
           <button class="care-button" data-action="nap"><span>🌙</span><b>낮잠</b><small>기운 회복</small></button>
         </div>
-        <div class="section-heading"><h2>애니 속 맛있는 시간</h2><small>먹으면 장면이 재생돼요</small></div><div id="animeFoods" class="anime-foods"></div>
+        <button class="village-invite" data-screen="villageScreen"><span>✿</span><b>마을로 산책 가기</b><small>걷다가 맛있는 걸 발견할지도!</small><strong>→</strong></button>
+        <div class="section-heading"><h2>산책 주머니</h2><small>마을에서 발견한 음식</small></div><div id="foodBag" class="food-bag"></div>
         <div class="section-heading"><h2>10초 미니게임</h2><small>짧고 신나게!</small></div>
         <div class="game-list">
           <button class="game-card hunt" data-game="hunt"><span class="game-emoji">⚔️</span><span><b>토벌</b><small>몬스터를 톡톡! 돌아오면 꼬질해요</small></span><strong>10초 ›</strong></button>
@@ -62,18 +66,34 @@
         </div>
       </section>
 
+      <section id="villageScreen" class="screen" aria-label="마을 산책">
+        <div class="village-heading"><div><small>작은 발걸음, 새로운 발견</small><h2>오늘은 어디로 갈까?</h2></div><button id="villageDance" class="icon-button" aria-label="마을에서 파자마 춤추기">♪</button></div>
+        <div class="village-viewport" id="villageViewport" aria-label="화면을 누르거나 아래 방향 버튼으로 이동하는 마을">
+          <div class="village-map" id="villageMap">
+            <svg class="village-terrain" viewBox="0 0 1400 1000" aria-hidden="true"><rect width="1400" height="1000" fill="#d7e5b7"/><path d="M-50 600Q250 500 400 580T800 480T1450 550M650-20Q590 240 680 500T580 1040" fill="none" stroke="#f4e4bb" stroke-width="105" stroke-linecap="round"/><path d="M-10 850Q200 700 400 850T1000 900T1450 780" fill="none" stroke="#b0d9d6" stroke-width="72"/><path d="M520 840l70-10" stroke="#bea77e" stroke-width="95"/><path d="M520 810l70-10m-70 22l70-10m-70 22l70-10" stroke="#e6d1a5" stroke-width="4"/><ellipse cx="860" cy="385" rx="165" ry="100" fill="#c7dc99"/><ellipse cx="1120" cy="740" rx="120" ry="85" fill="#bfd494"/></svg>
+            <div class="forest-cluster forest-one" aria-hidden="true">♠ ♠<br>♠ ♠ ♠</div><div class="forest-cluster forest-two" aria-hidden="true">♠ ♠<br>♠ ♠</div><div class="flower-patch" aria-hidden="true">✿ · ✿<br>· ✿ · ✿<br>✿ · ✿</div>
+            <button class="village-location dome-location" data-home="chiikawa" style="left:280px;top:580px" aria-label="치이카와의 집 구경"><span class="map-dome"><i></i></span><b>치이카와의 집</b></button>
+            <button class="village-location cave-location" data-home="hachiware" style="left:190px;top:140px" aria-label="하치와레의 동굴 구경"><span class="map-cave"><i></i></span><b>하치와레의 동굴</b></button>
+            <button class="village-location car-location" data-home="rakko" style="left:1110px;top:100px" aria-label="랏코의 자동차 구경"><svg viewBox="0 0 180 130" aria-hidden="true"><g stroke="#645047" stroke-width="3" stroke-linejoin="round"><path d="M23 71Q19 22 87 21Q136 22 143 69Q165 77 159 107H17Q9 85 23 71Z" fill="#fffdf0"/><path d="M33 65Q32 29 83 31Q126 31 132 65Z" fill="#d3e9ea"/><circle cx="39" cy="107" r="16" fill="#53534c"/><circle cx="135" cy="107" r="16" fill="#53534c"/><circle cx="35" cy="82" r="9" fill="#efb6b7"/><circle cx="138" cy="82" r="9" fill="#efb6b7"/><path d="M70 89q12 13 25 0M79 84h7M26 71l9-4m100 0l9 4M84 22V10" fill="none"/><path d="M84 11q-16-9-10-14q5-7 12 1q12-9 16 1q2 8-13 12Z" fill="#edb5bc"/></g></svg><b>랏코의 자동차</b></button>
+            <button class="village-location meadow-location" data-home="usagi" style="left:710px;top:120px" aria-label="우사기의 초원 구경"><span>✿ ✿ ✿</span><b>우사기의 초원</b></button>
+            <button class="village-location leaves-location" data-home="momonga" style="left:870px;top:850px" aria-label="모몽가의 은신처 구경"><span>❧ ❧</span><b>모몽가의 은신처</b></button>
+            <div id="villageMarkers"></div>
+            <div class="village-actor" id="villageActor"><img id="villagePet" alt="산책하는 캐릭터"><img id="villageClothes" alt="" hidden><img id="villageMud" alt="" hidden><span class="walking-shadow"></span></div>
+          </div>
+          <span class="village-map-tag">✿ 작은 마을</span>
+        </div>
+        <p class="village-hint" id="villageHint">화면을 누르거나 방향 버튼으로 걸어가요.</p>
+        <div class="walk-controls"><div class="walk-pad"><button data-walk="0,-1" aria-label="위로 걷기">↑</button><button data-walk="-1,0" aria-label="왼쪽으로 걷기">←</button><button data-walk="0,1" aria-label="아래로 걷기">↓</button><button data-walk="1,0" aria-label="오른쪽으로 걷기">→</button></div><button id="villageInspect" class="inspect-button" disabled>주변을 걸으며 찾아보세요</button></div>
+        <p class="village-note">반짝이는 곳 가까이 가서 조사해 보세요. 발견한 음식은 먹거나 주머니에 챙길 수 있어요.</p>
+      </section>
+
       <section id="roomScreen" class="screen" aria-label="방 꾸미기와 공유">
-        <div class="page-title"><span>⌂</span><h2>나만의 작은 방</h2><p>좋아하는 색과 가구를 골라 지인에게 보여줘요.</p></div>
+        <div class="page-title"><span>⌂</span><h2 id="roomThemeTitle">나의 작은 집</h2><p>이불과 작은 소품들을 끌어서 놓아 보세요.</p></div>
         <div class="room-preview" id="myRoom" aria-label="내 방 미리보기"></div>
         <div class="card save-card room-controls">
           <label for="roomName">방 이름</label><input id="roomName" maxlength="24" placeholder="우리 집">
-          <div class="decor-grid">
-            <label>벽지<select data-room="wall"><option value="peach">살구빛</option><option value="mint">민트빛</option><option value="lavender">라벤더</option></select></label>
-            <label>바닥<select data-room="floor"><option value="wood">나무</option><option value="cream">크림</option><option value="tile">체크 타일</option></select></label>
-            <label>러그<select data-room="rug"><option value="rose">분홍</option><option value="blue">하늘</option><option value="leaf">초록</option></select></label>
-            <label>가구<select data-room="furniture"><option value="sofa">소파</option><option value="bed">침대</option><option value="desk">책상</option></select></label>
-            <label>소품<select data-room="ornament"><option value="plant">화분</option><option value="bear">곰 인형</option><option value="lamp">스탠드</option></select></label>
-          </div>
+          <p id="decorHelp">소품을 고르고, 집 안에서 끌어서 배치해요.</p><div id="decorTray" class="decor-tray"></div>
+          <div class="decor-actions"><button id="removeDecor" class="secondary-button" disabled>선택한 소품 치우기</button><button id="resetDecor" class="secondary-button">기본 배치</button></div>
           <button id="shareRoom" class="primary-button full">↗ 내 방 공유하기</button>
           <p>공유할 때의 방 모습이 링크에 담겨요. 다시 꾸몄다면 새 링크를 보내주세요.</p>
           <div id="roomLinkBox" hidden><label for="roomLink">지인에게 보낼 링크</label><textarea id="roomLink" rows="3" readonly></textarea><button id="copyRoomLink" class="secondary-button full">링크 복사</button></div>
@@ -89,7 +109,7 @@
       </section>
     </main>
 
-    <nav class="bottom-nav" aria-label="메뉴"><button class="active" data-screen="homeScreen"><span>♡</span>돌보기</button><button data-screen="roomScreen"><span>⌂</span>꾸미기 · 공유</button><button data-screen="saveScreen"><span>▣</span>저장</button></nav>
+    <nav class="bottom-nav" aria-label="메뉴"><button class="active" data-screen="homeScreen"><span>♡</span>돌보기</button><button data-screen="villageScreen"><span>✿</span>마을 산책</button><button data-screen="roomScreen"><span>⌂</span>집 · 공유</button><button data-screen="saveScreen"><span>▣</span>저장</button></nav>
   </div>
 
   <div class="overlay" id="gameOverlay" hidden>
@@ -105,16 +125,20 @@
     <section class="meal-scene" role="dialog" aria-modal="true" aria-labelledby="mealTitle" data-phase="ready">
       <div class="meal-heading"><span>맛있는 시간</span><button class="icon-button" id="skipMeal" aria-label="식사 장면 닫기">×</button></div>
       <h2 id="mealTitle">잘 먹겠습니다!</h2>
-      <div class="food-video-box" id="foodVideoBox" hidden><iframe id="foodVideo" title="음식 먹는 장면" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><a id="foodVideoLink" target="_blank" rel="noopener noreferrer">YouTube에서 보기 ↗</a></div><div class="meal-stage"><span class="meal-hearts" aria-hidden="true">♥ ✦ ♥</span><img id="mealPet" src="assets/characters/chiikawa.png" alt="식사 중인 캐릭터"><span class="meal-bite" id="mealBite" aria-hidden="true">🍙</span><div class="meal-table"><span id="mealFood">🍙</span></div><span class="meal-crumbs" aria-hidden="true">· ✦ ·</span></div>
+      <div class="food-video-box" id="foodVideoBox" hidden><video id="foodClip" class="meal-clip" playsinline preload="metadata" aria-label="발견한 음식 먹는 장면"></video><div class="clip-track"><i id="clipProgress"></i></div><button id="clipPlay" class="clip-play" hidden>▷ 먹는 장면 재생</button></div><div class="meal-stage"><span class="meal-hearts" aria-hidden="true">♥ ✦ ♥</span><img id="mealPet" src="assets/characters/chiikawa.png" alt="식사 중인 캐릭터"><span class="meal-bite" id="mealBite" aria-hidden="true">🍙</span><div class="meal-table"><span id="mealFood">🍙</span></div><span class="meal-crumbs" aria-hidden="true">· ✦ ·</span></div>
       <p id="mealCaption" aria-live="polite">밥상 앞으로 총총…</p><div class="scene-dots" aria-hidden="true"><i></i><i></i><i></i></div>
     </section>
   </div>
+  <div class="overlay" id="discoveryOverlay" hidden><section class="discovery-scene" role="dialog" aria-modal="true" aria-labelledby="foundTitle"><button class="icon-button discovery-close" id="closeDiscovery" aria-label="발견 장면 닫기">×</button><small>산책 중 작은 발견</small><div id="foundFood" class="found-food">✦</div><h2 id="foundTitle">무엇을 발견했을까?</h2><p id="foundCaption"></p><button id="foundEat" class="primary-button full">여기서 먹기</button><button id="foundPocket" class="secondary-button full">주머니에 챙기기</button></section></div>
   <div class="overlay" id="visitOverlay" hidden><section class="visit-shell" role="dialog" aria-modal="true" aria-labelledby="visitTitle"><div class="game-top"><h2 id="visitTitle">지인의 방</h2><button class="icon-button" id="closeVisit" aria-label="방 구경 닫기">×</button></div><div class="room-preview" id="friendRoom"></div><p>지인이 공유할 때 꾸며둔 모습이에요.</p><button class="primary-button full" id="backToMyRoom">내 방 꾸미러 가기</button></section></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="art.js"></script>
   <script src="food-scenes.js"></script>
+  <script src="village.js"></script>
   <script src="game.js"></script>
   <script src="room.js"></script>
   <script src="wardrobe.js"></script>
+  <script src="habitat-decor.js"></script>
+  <script src="party.js"></script>
 </body>
 </html>

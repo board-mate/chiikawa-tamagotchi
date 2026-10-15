@@ -13,34 +13,35 @@ const games = {
 const outfits = [
   { id:'none', name:'기본 모습', price:0 }, { id:'vest', name:'초록 조끼', price:200 },
   { id:'pajama', name:'구름 잠옷', price:300 }, { id:'explorer', name:'탐험 망토', price:400 }, { id:'ribbon', name:'리본 옷', price:350 },
-  {id:'party-pink',name:'파자마 파티 · 분홍',price:500}, {id:'party-purple',name:'파자마 파티 · 보라',price:500},
-  {id:'party-mint',name:'파자마 파티 · 민트',price:500}, {id:'party-white',name:'파자마 파티 · 흰색',price:500}
+  {id:'party',name:'파자마 파티 일체복',price:500}
 ];
-const outfitId = value => outfits.some(o => o.id === value) ? value : 'none';
+const outfitId = value => typeof value==='string'&&value.startsWith('party-')?'party':outfits.some(o => o.id === value) ? value : 'none';
 const clamp = (n) => Math.max(0, Math.min(100, Number.isFinite(+n) ? +n : 0));
 const initialState = () => ({
   version: 1, character: 'chiikawa', createdAt: Date.now(), updatedAt: Date.now(),
   fullness: 76, mood: 82, energy: 84, clean: 100, coins: 60, sound: true,
   refusedLast: false, plays: 0, lastPatPlay: -1,
-  rooms: {}, ownedOutfits: ['none'], worn: {},
+  rooms: {}, ownedOutfits: ['none'], worn: {}, village:initialVillage(),
   room: { wall: 'peach', floor: 'wood', rug: 'rose', furniture: 'sofa', ornament: 'plant', name: '우리 집' }
 });
 function normalize(input) {
   if (!input || input.version !== 1 || !characters.some(([, id]) => id === input.character)) throw new Error('지원하지 않는 저장 데이터');
   const base = initialState();
+  const oldParties=[...new Set((Array.isArray(input.ownedOutfits)?input.ownedOutfits:[]).filter(id=>typeof id==='string'&&id.startsWith('party-')))];
   return {
     ...base, character: input.character,
     createdAt: Number.isFinite(+input.createdAt) ? +input.createdAt : Date.now(),
     updatedAt: Number.isFinite(+input.updatedAt) ? +input.updatedAt : Date.now(),
     fullness: clamp(input.fullness), mood: clamp(input.mood), energy: clamp(input.energy), clean: clamp(input.clean),
-    coins: Math.max(0, Math.min(999999, Math.floor(+input.coins || 0))),
+    coins: Math.max(0, Math.min(999999, Math.floor(+input.coins || 0)+Math.max(0,oldParties.length-1)*500)),
     sound: input.sound !== false,
     refusedLast: input.refusedLast === true,
     lastPatPlay: Number.isFinite(input.lastPatPlay) ? input.lastPatPlay : -1,
     room: sanitizeRoom(input.room),
     rooms: Object.fromEntries(characters.filter(([,id])=>input.rooms?.[id]).map(([,id])=>[id,sanitizeRoom(input.rooms[id])])),
     ownedOutfits: [...new Set(['none', ...(Array.isArray(input.ownedOutfits) ? input.ownedOutfits : []).map(outfitId)])],
-    worn: Object.fromEntries(characters.map(([,id])=>[id, Array.isArray(input.ownedOutfits) && input.ownedOutfits.includes(input.worn?.[id]) ? outfitId(input.worn[id]) : 'none'])),
+    worn: Object.fromEntries(characters.map(([,id])=>[id, Array.isArray(input.ownedOutfits) && input.ownedOutfits.includes(input.worn?.[id]) && (outfitId(input.worn[id])!=='party'||partyCharacters.includes(id)) ? outfitId(input.worn[id]) : 'none'])),
+    village:sanitizeVillage(input.village),
     plays: Math.max(0, Math.floor(+input.plays || 0))
   };
 }
@@ -80,6 +81,7 @@ function sanitizeRoom(room) {
   const result = { ...defaults };
   for (const key of Object.keys(choices)) if (choices[key].includes(room?.[key])) result[key] = room[key];
   if (typeof room?.name === 'string') result.name = room.name.trim().slice(0, 24) || defaults.name;
+  if(Array.isArray(room?.items))result.items=room.items.slice(0,14).filter(item=>item&&['futon','table','lantern','books','bear','bag','camera','box','plant'].includes(item.kind)).map(item=>({kind:item.kind,x:Math.max(6,Math.min(94,Number(item.x)||50)),y:Math.max(40,Math.min(91,Number(item.y)||70))}));
   return result;
 }
 function characterName() { return characters.find(([, id]) => id === state.character)?.[0] || '치이카와'; }
@@ -114,9 +116,11 @@ function render() {
   for (const id of ['petFrameA', 'petFrameB']) paintCharacter($('#' + id),state.character,outfitId(state.worn?.[state.character]));
   const outfit = outfitId(state.worn?.[state.character]);
   $('#miniSprite').style.backgroundImage = outfit === 'none' ? `url("${image}")` : `url("${outfitUrl(state.character,outfit)}"),url("${image}")`;
+  if(outfit==='party'){$('#miniSprite').style.backgroundImage=`url("assets/sprites/${state.character}-party-v6.png")`;$('#miniSprite').style.backgroundSize=state.character==='usagi'?'400% 112%':'400% 133.333%';$('#miniSprite').style.backgroundPosition='0% 50%';}
+  else{$('#miniSprite').style.backgroundSize='contain';$('#miniSprite').style.backgroundPosition='center';}
   for (const id of ['petOutfitA','petOutfitB','mealOutfit']) {
-    const node = $('#' + id); if (!node) continue; node.hidden = outfit === 'none' || state.character === 'chiikawa';
-    if (outfit !== 'none') node.src = outfitUrl(state.character,outfit);
+    const node = $('#' + id); if (!node) continue; node.hidden = outfit === 'none' || isCompositeOutfit(state.character,outfit);
+    if (!node.hidden) node.src = outfitUrl(state.character,outfit);
   }
   $('#characterTag').textContent = characterName();
   $('#dayLabel').textContent = `완료한 일 ${state.plays}회 · 일할 때만 배고파요`;
@@ -132,16 +136,20 @@ function render() {
   $('#characterSelect').value = state.character;
   window.renderRoom?.();
   window.renderWardrobe?.();
+  if(document.readyState!=='loading')window.renderVillage?.();
 }
 function showScreen(id) {
+  if(id!=='villageScreen'&&typeof stopVillageWalk==='function')stopVillageWalk();
   $$('.screen').forEach((node) => node.classList.toggle('active', node.id === id));
   $$('[data-screen]').forEach((node) => node.classList.toggle('active', node.dataset.screen === id));
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  if(id==='villageScreen')renderVillage();
 }
 $$('[data-screen]').forEach((button) => button.addEventListener('click', () => showScreen(button.dataset.screen)));
 
 function care(action) {
   if (mealActive || activeGame) return;
+  if(foodScenes[action]){eatVillageFood(action);return;}
   if (action === 'rice' || foodScenes[action]) {
     const food = foodScenes[action];
     if (state.fullness >= 96) { showToast(food ? '배가 불러요! 장면 다시 보기로 감상할 수 있어요.' : '이미 배가 불러요!'); chirp('うな！', '배불러~!'); return; }
@@ -270,6 +278,7 @@ function applyImport(raw) {
   const next = normalize(JSON.parse(raw));
   if (next.createdAt > Date.now() + 86400000) throw new Error('날짜가 올바르지 않아요');
   if (activeGame) stopGame(false);
+  stopVillageWalk(false);if(typeof endPartyDance==='function')endPartyDance();
   state = next; persist(); showScreen('homeScreen');
   setSpeech('다시 만나서 반가워!'); showToast('저장 데이터를 불러왔어요!');
 }
@@ -310,6 +319,8 @@ $('#characterSelect').addEventListener('change', (event) => {
 });
 function selectCharacter(id) {
   if (!characters.some(([,key])=>key===id) || mealActive || activeGame) return;
+  if(typeof endPartyDance==='function')endPartyDance();
+  if(typeof selectedDecor!=='undefined')selectedDecor=-1;
   state.rooms[state.character] = sanitizeRoom(state.room);
   state.character = id;
   state.room = sanitizeRoom(state.rooms[id]);

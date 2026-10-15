@@ -1,0 +1,64 @@
+.bottom-nav{grid-template-columns:repeat(4,1fr)}
+.bottom-nav button{font-size:10px}
+.party-outfit{background-size:400% 133.333%;background-repeat:no-repeat}.party-outfit.party-usagi{background-size:400% 112%}
+.party-button{width:100%;min-height:42px;border:1px solid #d8d0e6;border-radius:14px;margin:0 0 13px;background:#f0eaf6;color:#8c719f;font-size:12px}
+.party-dancing .pet-art,.village-actor.party-dancing{animation:party-step .48s ease-in-out infinite}
+.party-dancing .frame-a{animation:none}
+@keyframes party-step{25%{margin-left:-3px;translate:0 -5px}75%{margin-left:3px;translate:0 -5px}}
+.authentic-world .sun,.authentic-world .cloud,.authentic-world .sparkle,.authentic-world:before,.authentic-world .ground{display:none}
+.authentic-world{background:#f1e4c7!important}
+.anime-habitat{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.world .habitat-layer{z-index:0}.world .pet{bottom:18px}
+.world.authentic-world .pet{width:clamp(128px,38vw,178px);height:clamp(128px,38vw,178px)}
+.world[data-habitat=car].authentic-world .pet{left:70%;bottom:19px}
+.food-bag{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:18px}
+.food-bag button{display:grid;grid-template-columns:34px 1fr;gap:3px 5px;align-items:center;padding:12px 8px;border:1px solid #e7dcc7;border-radius:14px;background:#fffdf5;color:var(--ink);text-align:left}
+.food-bag button>span{grid-row:span 2;font-size:26px}.food-bag b{font-size:11px}.food-bag small{font-size:10px;color:#aa916f}
+.empty-bag{grid-column:1/-1;margin:0;padding:17px;border:1px dashed #d7c8ae;border-radius:14px;color:#a18e74;font-size:11px;text-align:center}
+.village-invite{display:grid;grid-template-columns:38px 1fr 20px;align-items:center;gap:3px 8px;width:100%;min-height:78px;padding:14px;margin:15px 0;border:1px solid #cad7b7;border-radius:19px;background:linear-gradient(115deg,#edf2dc,#e3edcf);color:#75835d;text-align:left}
+.village-invite>span{grid-row:span 2;font-size:32px;color:#d4a68e}.village-invite>b{font-size:14px}.village-invite>small{font-size:10px;color:#91a17c}.village-invite>strong{grid-column:3;grid-row:1/3;font-size:22px}
+.village-heading{display:flex;align-items:center;justify-content:space-between;padding:18px 4px 13px}.village-heading small{font-size:10px;color:#ac9a80}.village-heading h2{font-size:21px;margin:4px 0 0;letter-spacing:-.04em}
+.village-viewport{position:relative;height:min(55dvh,420px);min-height:300px;border:4px solid #fff;border-radius:25px;overflow:hidden;background:#d8e7bb;touch-action:none;box-shadow:var(--shadow)}
+.village-map{position:absolute;left:0;top:0;width:1400px;height:1000px;will-change:transform;transform-origin:0 0;user-select:none}
+.village-terrain{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.village-map:before{content:'';position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(ellipse,#7fa56966 0 1px,transparent 2px),radial-gradient(ellipse,#a0b77b88 0 2px,transparent 3px);background-size:53px 49px,77px 83px;background-position:15px 22px,48px 51px}
+.village-map-tag{position:absolute;top:11px;left:11px;padding:7px 10px;border:1px solid #cad7af;border-radius:11px;background:#fff9e9e8;color:#7c8e61;font-size:10px;pointer-events:none}
+.forest-cluster{position:absolute;color:#8eae76;font-size:120px;line-height:.7;letter-spacing:-30px;text-shadow:0 6px #66845744;pointer-events:none}.forest-one{left:60px;top:170px;rotate:-9deg}.forest-two{right:60px;bottom:200px;color:#9ab87d}
+.flower-patch{position:absolute;left:750px;top:280px;font-size:32px;line-height:1.7;letter-spacing:20px;color:#edb5b1;text-shadow:0 3px #b7ce8f;pointer-events:none}
+.village-location{position:absolute;z-index:1;width:180px;height:150px;padding:0;border:0;background:none;color:#7d785e;transform:translate(-50%,-50%)}
+.village-location b{position:absolute;left:50%;bottom:-12px;translate:-50% 0;white-space:nowrap;font-size:12px;background:#fff8e4bd;border-radius:12px;padding:4px 9px}
+.map-dome{position:absolute;left:12px;top:13px;width:150px;height:120px;border:3px solid #a3967c;border-radius:80px 80px 9px 9px;background:#fffcdd;box-shadow:inset -12px -5px #e3d6ad}
+.map-dome i{position:absolute;bottom:0;left:53px;width:45px;height:62px;border:3px solid #a3967c;border-bottom:0;border-radius:30px 30px 0 0;background:#d0b28c}.map-dome:after{content:'□';position:absolute;right:14px;top:45px;color:#92b9c3;font-size:25px}
+.map-cave{position:absolute;left:5px;top:10px;width:165px;height:120px;border:3px solid #8a8c7e;border-radius:60% 50% 8% 10%;background:linear-gradient(130deg,#c2c0ad,#9a9e8a);box-shadow:inset 9px 3px #d0ccba}
+.map-cave i{position:absolute;left:51px;bottom:0;width:67px;height:83px;border:6px solid #858d79;border-bottom:0;border-radius:45px 45px 0 0;background:#596b55}
+.car-location svg{width:180px;height:130px;overflow:visible}.meadow-location>span{font-size:45px;color:#edbdaf;text-shadow:4px 5px #b0c789}.leaves-location>span{font-size:90px;color:#6e995e;letter-spacing:-20px}
+.food-spark{position:absolute;z-index:3;width:42px;height:42px;translate:-50% -50%;border:1px dashed #d6b46e;border-radius:50%;background:#fff4c96e;color:#bf9957;font-size:28px;animation:sparkle-event 1s ease-in-out infinite alternate}
+.food-spark.nearby{border:2px solid #e1b967;box-shadow:0 0 0 8px #fff8c844;color:#be8b43}
+@keyframes sparkle-event{to{scale:1.18;filter:brightness(1.15)}}
+.village-actor{position:absolute;width:94px;height:100px;z-index:5;translate:-50% -80%;pointer-events:none}
+.village-actor>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:2}.village-actor>img:nth-child(2){z-index:3}.village-actor>img:nth-child(3){z-index:4}
+.walking-shadow{position:absolute;z-index:1;bottom:-2px;left:25%;width:50%;height:9px;border-radius:50%;background:#61784a33}
+.village-actor.walking>img{animation:village-walk .22s steps(2) infinite}
+.village-actor[data-facing=left]>img{scale:-1 1}
+@keyframes village-walk{50%{translate:0 -5px;rotate:3deg}}
+.village-hint{font-size:11px;color:#9e886d;text-align:center;min-height:18px;margin:12px 5px}
+.walk-controls{display:flex;align-items:center;gap:13px;padding:2px 4px}.walk-pad{display:grid;grid-template-columns:repeat(3,38px);grid-template-rows:repeat(2,36px);gap:4px;flex:none}.walk-pad button{border:1px solid #dccdb3;border-radius:10px;background:#fffaf0;color:#9a8567;font-size:20px}.walk-pad button:first-child{grid-column:2}.walk-pad button:nth-child(2){grid-row:2;grid-column:1}.walk-pad button:nth-child(3){grid-row:2;grid-column:2}.walk-pad button:nth-child(4){grid-row:2;grid-column:3}
+.inspect-button{flex:1;min-height:66px;border:1px solid #cdba8c;border-radius:16px;padding:9px;background:#f5e9bd;color:#8d784c;font-size:12px;line-height:1.5}.inspect-button:disabled{color:#b5a894;background:#f4efdf;border-color:#e1d8c4}
+.village-note{font-size:10px;color:#b3a28b;line-height:1.8;text-align:center;padding:7px 9px}
+.discovery-scene{position:relative;width:min(90vw,370px);padding:30px 24px 24px;border:3px solid #fffaf0;border-radius:27px;background:radial-gradient(ellipse at 50% 25%,#fff9d3,#fffaf0);box-shadow:0 10px 50px #42372133;text-align:center}
+.discovery-close{position:absolute;top:10px;right:10px}.discovery-scene>small{font-size:10px;color:#b99d6b}.found-food{font-size:82px;padding:29px 0 5px;filter:drop-shadow(0 8px 2px #d5ba7222)}.discovery-scene h2{font-size:22px;margin:7px 0 10px}.discovery-scene p{font-size:12px;color:#ac926d;line-height:1.7;margin-bottom:23px}.discovery-scene .secondary-button{margin-top:8px}
+.authentic-room{height:clamp(270px,75vw,355px);background:#e9dfc7!important;overflow:hidden;touch-action:none}
+.authentic-room .habitat-layer{z-index:0}.authentic-room .room-character{left:48%;top:51%;bottom:auto;translate:-50% 0;width:27%;height:40%;object-fit:contain;animation:none;z-index:77;filter:drop-shadow(0 4px 2px #5e654422)}
+.authentic-room .room-clothes{z-index:78;filter:none}.authentic-room .room-dirt{z-index:79!important;filter:none}
+.authentic-room[data-character=rakko] .room-character{left:78%;top:52%;width:23%;height:37%}
+.authentic-room .room-plaque{z-index:100;bottom:auto;top:11px;right:10px;font-size:10px;background:#fff8dfcf;border-color:#d5c0a1;padding:6px 10px}
+.placed-decor{position:absolute;inset:0;z-index:2}.decor-item{position:absolute;translate:-50% -50%;padding:0;border:0;border-radius:8px;background:none;touch-action:none;cursor:grab;color:inherit}.decor-item svg{display:block;width:100%;height:auto;overflow:visible;filter:drop-shadow(0 3px 1px #74624522)}.decor-item:focus-visible,.decor-item.selected{outline:2px dashed #d3a270;outline-offset:2px}.decor-item:active{cursor:grabbing}.decor-item:disabled{cursor:default;opacity:1}
+.decor-tray{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0}.decor-tray button{padding:4px 3px 9px;border:1px solid #e7dbc5;border-radius:13px;background:#fffaf0;color:#8f7d67}.decor-tray svg{display:block;width:70px;height:58px;margin:auto}.decor-tray span{font-size:9px}
+.decor-actions{display:flex;gap:7px;margin-bottom:15px}.decor-actions button{min-height:37px;font-size:10px;padding:8px}
+.room-controls>#decorHelp{font-size:11px;color:#a58d70;line-height:1.8}.room-controls>#roomName{margin-bottom:6px}
+.meal-clip{display:block;width:100%;max-height:62dvh;min-height:220px;object-fit:contain;background:#f7efdc;border-radius:17px}
+.clip-hint{font-size:10px;color:#ad967b;text-align:center;margin:8px}.clip-play{min-height:42px;border:1px solid #d8c497;border-radius:12px;background:#fbefc9;color:#97764c;padding:9px 18px}
+.clip-track{height:4px;background:#e8ddc7;border-radius:9px;overflow:hidden;margin:10px 4px}.clip-track i{display:block;width:0;height:100%;background:#c9ae78;transition:width .1s linear}
+.authentic-room .room-plaque{left:auto;transform:none}.placed-decor{z-index:auto}
+.home-placed-decor{position:absolute;inset:0;z-index:2;pointer-events:none}.home-decor-item{position:absolute;translate:-50% -50%}.home-decor-item svg{display:block;width:100%;filter:drop-shadow(0 3px 1px #6b563c22)}
+@media(prefers-reduced-motion:reduce){.food-spark,.village-actor.walking>img,.party-dancing .pet-art,.village-actor.party-dancing{animation:none}}

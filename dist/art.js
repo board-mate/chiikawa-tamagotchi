@@ -1,17 +1,23 @@
 // Sprite-sheet viewports retain the original generated transparent PNGs.
 const blankSprite = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="320" height="320"/%3E';
+const partyCharacters = ['chiikawa','hachiware','usagi'];
+const partyColors = {chiikawa:'분홍',hachiware:'하늘색',usagi:'노란색'};
+function isCompositeOutfit(character,outfit) { return (outfit==='party'&&partyCharacters.includes(character)) || (character==='chiikawa'&&['vest','pajama','explorer','ribbon'].includes(outfit)); }
 function paintCharacter(node, character, outfit = 'none') {
-  const party = ['party-pink','party-purple','party-mint','party-white'].indexOf(outfit);
-  const frame = party >= 0 ? party : ['vest','pajama','explorer','ribbon'].indexOf(outfit);
-  const composite = character === 'chiikawa' && frame >= 0;
+  const party = outfit==='party'&&partyCharacters.includes(character);
+  const frame = ['vest','pajama','explorer','ribbon'].indexOf(outfit);
+  const composite = isCompositeOutfit(character,outfit);
   node.src = composite ? blankSprite : `assets/characters/${character}.png`;
   node.classList.toggle('drawn-outfit', composite);
-  node.classList.toggle('party-outfit', composite && party >= 0);
-  node.style.backgroundPosition = composite ? `${frame * 100 / 3}% 50%` : '';
+  node.classList.toggle('party-outfit',party);
+  node.classList.toggle('party-usagi',party&&character==='usagi');
+  node.dataset.character=character;
+  node.style.backgroundImage=party?`url("assets/sprites/${character}-party-v6.png")`:'';
+  node.style.backgroundPosition = party?'0% 50%':composite?`${frame * 100 / 3}% 50%`:'';
   return composite;
 }
 function dirtArt(character, outfit) {
-  const composite = character === 'chiikawa' && outfit !== 'none';
+  const composite = isCompositeOutfit(character,outfit);
   return composite ? 'assets/sprites/mud-dressed.svg' : 'assets/sprites/mud-body.svg';
 }
 function updateDirt() {
