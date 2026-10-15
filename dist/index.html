@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6d9ad">
+  <meta name="description" content="치이카와를 돌보고 10초 미니게임을 즐기는 개인용 다마고치">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="style.css">
+  <title>치이카와 다마고치</title>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><span class="brand-icon">✿</span><div><small>작고 소중한 하루</small><h1>치이카와 다마고치</h1></div></div>
+      <button id="soundButton" class="icon-button" aria-label="소리 끄기" title="소리 켜기 또는 끄기">♪</button>
+    </header>
+
+    <main>
+      <section id="homeScreen" class="screen active" aria-label="다마고치 돌보기">
+        <div class="status-row"><span id="dayLabel">함께한 첫날</span><span class="coins">✦ <b id="coinCount">0</b></span></div>
+        <div class="world" id="world">
+          <div class="sun">☀</div><div class="cloud cloud-one">☁</div><div class="cloud cloud-two">☁</div>
+          <div class="sparkle sparkle-one">✿</div><div class="sparkle sparkle-two">✿</div>
+          <div class="speech" id="speech" aria-live="polite">같이 놀자!</div>
+          <button class="pet" id="petButton" aria-label="캐릭터 쓰다듬기">
+            <span class="sprite" id="petSprite"><img class="frame frame-a" id="petFrameA" src="assets/characters/chiikawa.png" alt=""><img class="frame frame-b" id="petFrameB" src="assets/characters/chiikawa.png" alt=""></span>
+            <span class="dirt" id="dirt" aria-hidden="true">✦ ⋰ ✦</span>
+          </button>
+          <div class="ground"></div>
+          <span class="character-tag" id="characterTag">치이카와</span>
+        </div>
+        <div class="meters card" aria-label="캐릭터 상태">
+          <div class="meter" data-stat="fullness"><div class="meter-label"><span>🍙 배부름</span><b id="fullnessNumber">75</b></div><div class="track"><i id="fullnessBar"></i></div></div>
+          <div class="meter" data-stat="mood"><div class="meter-label"><span>♥ 기분</span><b id="moodNumber">80</b></div><div class="track"><i id="moodBar"></i></div></div>
+          <div class="meter" data-stat="energy"><div class="meter-label"><span>⚡ 기운</span><b id="energyNumber">85</b></div><div class="track"><i id="energyBar"></i></div></div>
+          <div class="meter" data-stat="clean"><div class="meter-label"><span>✧ 깨끗함</span><b id="cleanNumber">100</b></div><div class="track"><i id="cleanBar"></i></div></div>
+        </div>
+        <div class="section-heading"><h2>오늘의 돌봄</h2><small>누르면 바로 반응해요</small></div>
+        <div class="care-grid">
+          <button class="care-button" data-action="rice"><span>🍙</span><b>주먹밥</b><small>든든하게</small></button>
+          <button class="care-button" data-action="pancake"><span>🥞</span><b>핫케이크</b><small>달콤하게</small></button>
+          <button class="care-button" data-action="bath"><span>🛁</span><b>목욕</b><small>꼬질꼬질할 때</small></button>
+          <button class="care-button" data-action="nap"><span>🌙</span><b>낮잠</b><small>기운 회복</small></button>
+        </div>
+        <div class="section-heading"><h2>10초 미니게임</h2><small>짧고 신나게!</small></div>
+        <div class="game-list">
+          <button class="game-card hunt" data-game="hunt"><span class="game-emoji">⚔️</span><span><b>토벌</b><small>몬스터를 톡톡! 돌아오면 꼬질해요</small></span><strong>10초 ›</strong></button>
+          <button class="game-card weed" data-game="weed"><span class="game-emoji">🌱</span><span><b>제초</b><small>풀을 빠르게 뽑아요</small></span><strong>10초 ›</strong></button>
+          <button class="game-card forage" data-game="forage"><span class="game-emoji">🍓</span><span><b>간식 줍기</b><small>맛있는 간식만 골라요</small></span><strong>10초 ›</strong></button>
+        </div>
+      </section>
+
+      <section id="saveScreen" class="screen" aria-label="저장과 불러오기">
+        <div class="page-title"><span>✦</span><h2>저장 · 불러오기</h2><p>자동 저장되며, 다른 브라우저나 PC에서도 이어할 수 있어요.</p></div>
+        <div class="card save-card"><h3>저장 파일</h3><p>파일을 내려받아 다른 기기로 옮긴 뒤 불러오세요.</p><div class="save-actions"><button id="downloadSave" class="primary-button">⬇ 저장 파일 받기</button><label class="secondary-button">⬆ 파일 불러오기<input id="uploadSave" type="file" accept="application/json,.json" hidden></label></div></div>
+        <div class="card save-card"><h3>저장 코드</h3><p>짧은 이동에는 코드를 복사해 다른 기기에 붙여넣을 수 있어요.</p><button id="copySave" class="secondary-button full">코드 복사</button><label for="saveCode">불러올 코드</label><textarea id="saveCode" rows="4" placeholder="다른 기기에서 복사한 코드를 붙여넣으세요"></textarea><button id="loadCode" class="primary-button full">코드로 불러오기</button></div>
+        <div class="card settings"><h3>캐릭터</h3><label for="characterSelect">함께할 친구</label><select id="characterSelect"></select><p>캐릭터를 바꿔도 돌봄 기록은 이어집니다.</p></div>
+        <p class="save-footnote">비공식 개인용 팬게임 · 저장 데이터는 이 브라우저에 자동 보관됩니다.</p>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="메뉴"><button class="active" data-screen="homeScreen"><span>⌂</span>돌보기</button><button data-screen="saveScreen"><span>▣</span>저장</button></nav>
+  </div>
+
+  <div class="overlay" id="gameOverlay" hidden>
+    <div class="game-shell" role="dialog" aria-modal="true" aria-labelledby="gameTitle">
+      <div class="game-top"><div><small>10초 미니게임</small><h2 id="gameTitle">토벌</h2></div><button id="closeGame" class="icon-button" aria-label="게임 닫기">×</button></div>
+      <div class="game-hud"><div><small>남은 시간</small><b id="gameTime">10.0</b></div><div><small>점수</small><b id="gameScore">0</b></div></div>
+      <div class="game-stage" id="gameStage"><div class="game-hint" id="gameHint">대상을 눌러 주세요!</div><div class="game-pet"><span class="mini-sprite" id="miniSprite"></span></div><button id="gameTarget" class="game-target" aria-label="목표 누르기">👾</button></div>
+      <div class="game-result" id="gameResult" hidden><div id="resultEmoji">🎉</div><h3 id="resultTitle">잘했어!</h3><p id="resultText"></p><button id="resultClose" class="primary-button full">돌아가기</button></div>
+      <p class="game-help" id="gameHelp">화면 속 대상을 빠르게 눌러 주세요.</p>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="game.js"></script>
+</body>
+</html>

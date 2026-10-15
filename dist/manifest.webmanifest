@@ -1,0 +1,10 @@
+{
+  "name": "치이카와 다마고치",
+  "short_name": "치이카와",
+  "description": "치이카와를 돌보고 10초 미니게임을 즐기는 개인용 다마고치",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff8e7",
+  "theme_color": "#f6d9ad",
+  "icons": []
+}
