@@ -92,24 +92,108 @@ function openRoomCode(code) {
     const snapshot = decodeRoom(code);
     drawRoom($('#friendRoom'), snapshot.room, snapshot.character, snapshot.outfit,snapshot.clean);
     $('#visitTitle').textContent = snapshot.room.name;
+    rememberFriend(code);
     openScene('#visitOverlay', '#closeVisit');
+    enterFriendRoom(snapshot);
   } catch { showToast('방 링크를 읽지 못했어요. 전체 링크를 다시 확인해 주세요.'); }
 }
 function closeVisit() {
   closeScene('#visitOverlay');
+  $('#friendRoom').replaceChildren();
   if (location.hash.startsWith('#room=')) history.replaceState(null, '', location.pathname + location.search);
 }
 $('#closeVisit').addEventListener('click', closeVisit);
 $('#backToMyRoom').addEventListener('click', () => { closeVisit(); showScreen('roomScreen'); });
 $('#visitRoom').addEventListener('click', () => {
   try {
-    const url = new URL($('#visitLink').value.trim());
+    const url = new URL($('#visitLink').value.trim(), location.href);
     if (!url.hash.startsWith('#room=')) throw new Error();
     openRoomCode(url.hash.slice(6));
   } catch { showToast('받은 방 공유 링크를 붙여넣어 주세요.'); }
 });
 function readSharedRoom() { if (location.hash.startsWith('#room=')) openRoomCode(location.hash.slice(6)); }
 window.addEventListener('hashchange', readSharedRoom);
+
+function rememberFriend(code) {
+  state.friends ||= [];
+  if (state.friends.some(friend => friend.code === code)) return;
+  state.friends.unshift({ code });
+  state.friends = state.friends.slice(0, 8);
+  persist();
+}
+window.renderFriends = () => {
+  const list = $('#friendList');
+  if (!list) return;
+  list.replaceChildren();
+  const friends = Array.isArray(state.friends) ? state.friends : [];
+  if (!friends.length) {
+    const note = document.createElement('p');
+    note.className = 'friend-empty';
+    note.textContent = '친구가 보낸 집 링크를 붙여넣으면 여기에 저장돼요.';
+    list.append(note);
+    return;
+  }
+  friends.forEach((friend, index) => {
+    let snapshot;
+    try { snapshot = decodeRoom(friend.code); } catch { return; }
+    const card = document.createElement('div'); card.className = 'friend-card';
+    const icon = document.createElement('img'); icon.alt = ''; paintCharacter(icon, snapshot.character, snapshot.outfit);
+    const label = document.createElement('span');
+    label.textContent = snapshot.room.name;
+    const visit = document.createElement('button'); visit.className = 'primary-button'; visit.textContent = '놀러가기';
+    visit.addEventListener('click', () => openRoomCode(friend.code));
+    const remove = document.createElement('button'); remove.className = 'friend-remove'; remove.textContent = '×';
+    remove.setAttribute('aria-label', snapshot.room.name + ' 목록에서 지우기');
+    remove.addEventListener('click', () => { state.friends.splice(index, 1); persist(); });
+    card.append(icon, label, visit, remove); list.append(card);
+  });
+};
+let visitDecorIndex = 0;
+function moveVisitor(x) {
+  const guest = $('#friendRoom .visit-guest');
+  if (!guest) return;
+  guest.style.setProperty('--guest-x', Math.max(9, Math.min(84, x)) + '%');
+  guest.classList.remove('hopping'); void guest.offsetWidth; guest.classList.add('hopping');
+}
+function enterFriendRoom(snapshot) {
+  const room = $('#friendRoom');
+  const guest = document.createElement('span'); guest.className = 'visit-guest';
+  const body = document.createElement('img'); body.alt = '놀러 온 ' + characterName();
+  const outfit = outfitId(state.worn?.[state.character]);
+  const composite = paintCharacter(body, state.character, outfit);
+  guest.append(body);
+  if (outfit !== 'none' && !composite) {
+    const clothes = document.createElement('img'); clothes.src = outfitUrl(state.character, outfit); clothes.alt = ''; guest.append(clothes);
+  }
+  if (state.clean < 85) {
+    const mud = document.createElement('img'); mud.src = dirtArt(state.character, outfit); mud.alt = ''; mud.className = 'visit-mud';
+    mud.style.opacity = state.clean < 45 ? '.94' : '.66'; guest.append(mud);
+  }
+  room.append(guest);
+  visitDecorIndex = 0;
+  $('#visitMessage').textContent = `${characterName()}가 ${snapshot.room.name}에 놀러 왔어요!`;
+}
+$('#friendRoom').addEventListener('pointerdown', event => {
+  if ($('#visitOverlay').hidden) return;
+  const room = $('#friendRoom');
+  const rect = room.getBoundingClientRect();
+  moveVisitor((event.clientX - rect.left) / rect.width * 100);
+  const decor = event.target.closest('.decor-item');
+  if (decor) $('#visitMessage').textContent = decor.getAttribute('aria-label').replace(' 옮기기', '') + '를 구경했어요.';
+  else $('#visitMessage').textContent = `${characterName()}가 집 안을 총총 걸어요.`;
+});
+$('#visitGreet').addEventListener('click', () => {
+  moveVisitor(36);
+  $('#visitMessage').textContent = `${characterName()}가 반갑게 손을 흔들어요. 우나!`;
+  if (state.sound) chirp('うな！', '친구야, 안녕! 우나!');
+});
+$('#visitExplore').addEventListener('click', () => {
+  const items = $('#friendRoom').querySelectorAll('.decor-item');
+  if (!items.length) { $('#visitMessage').textContent = '아늑한 집을 둘러봤어요.'; return; }
+  const item = items[visitDecorIndex++ % items.length];
+  moveVisitor(Number.parseFloat(item.style.left));
+  $('#visitMessage').textContent = item.getAttribute('aria-label').replace(' 옮기기', '') + '를 구경했어요.';
+});
 
 function finishMeal() {
   stopFoodVideo();
@@ -151,4 +235,5 @@ document.addEventListener('keydown', (event) => {
   }
 });
 window.renderRoom();
-readSharedRoom();
+window.renderFriends();
+document.addEventListener('DOMContentLoaded', readSharedRoom);

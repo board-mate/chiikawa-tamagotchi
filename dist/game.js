@@ -21,7 +21,7 @@ const initialState = () => ({
   version: 1, character: 'chiikawa', createdAt: Date.now(), updatedAt: Date.now(),
   fullness: 76, mood: 82, energy: 84, clean: 100, coins: 60, sound: true,
   refusedLast: false, plays: 0, lastPatPlay: -1,
-  rooms: {}, ownedOutfits: ['none'], worn: {}, village:initialVillage(),
+  rooms: {}, friends: [], ownedOutfits: ['none'], worn: {}, village:initialVillage(),
   room: { wall: 'peach', floor: 'wood', rug: 'rose', furniture: 'sofa', ornament: 'plant', name: '우리 집' }
 });
 function normalize(input) {
@@ -39,6 +39,7 @@ function normalize(input) {
     lastPatPlay: Number.isFinite(input.lastPatPlay) ? input.lastPatPlay : -1,
     room: sanitizeRoom(input.room),
     rooms: Object.fromEntries(characters.filter(([,id])=>input.rooms?.[id]).map(([,id])=>[id,sanitizeRoom(input.rooms[id])])),
+    friends: Array.isArray(input.friends) ? input.friends.slice(0,8).filter(friend=>friend&&typeof friend.code==='string'&&friend.code.length<=4000&&/^[A-Za-z0-9_-]+$/.test(friend.code)).map(friend=>({code:friend.code})) : [],
     ownedOutfits: [...new Set(['none', ...(Array.isArray(input.ownedOutfits) ? input.ownedOutfits : []).map(outfitId)])],
     worn: Object.fromEntries(characters.map(([,id])=>[id, Array.isArray(input.ownedOutfits) && input.ownedOutfits.includes(input.worn?.[id]) && (outfitId(input.worn[id])!=='party'||partyCharacters.includes(id)) ? outfitId(input.worn[id]) : 'none'])),
     village:sanitizeVillage(input.village),
@@ -135,6 +136,7 @@ function render() {
   $('#soundButton').setAttribute('aria-label', state.sound ? '소리 끄기' : '소리 켜기');
   $('#characterSelect').value = state.character;
   window.renderRoom?.();
+  window.renderFriends?.();
   window.renderWardrobe?.();
   if(document.readyState!=='loading')window.renderVillage?.();
 }

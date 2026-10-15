@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="art.css">
   <link rel="stylesheet" href="v5.css">
   <link rel="stylesheet" href="v6.css">
+  <link rel="stylesheet" href="v7.css">
   <title>치이카와 다마고치</title>
 </head>
 <body>
@@ -98,7 +99,7 @@
           <p>공유할 때의 방 모습이 링크에 담겨요. 다시 꾸몄다면 새 링크를 보내주세요.</p>
           <div id="roomLinkBox" hidden><label for="roomLink">지인에게 보낼 링크</label><textarea id="roomLink" rows="3" readonly></textarea><button id="copyRoomLink" class="secondary-button full">링크 복사</button></div>
         </div>
-        <div class="card save-card"><h3>지인의 방 구경하기</h3><label for="visitLink">받은 공유 링크</label><textarea id="visitLink" rows="2" placeholder="지인이 보내준 방 링크를 붙여넣어요"></textarea><button id="visitRoom" class="secondary-button full">방 구경하기</button></div>
+        <div class="card save-card"><h3>친구 집 놀러가기</h3><p>친구가 보낸 집 링크로 방문해요. 한 번 방문한 집은 아래 목록에 남아요.</p><label for="visitLink">받은 공유 링크</label><textarea id="visitLink" rows="2" placeholder="친구가 보내준 집 링크를 붙여넣어요"></textarea><button id="visitRoom" class="secondary-button full">친구 집 놀러가기</button><div id="friendList" class="friend-list" aria-label="저장한 친구 집"></div></div>
       </section>
       <section id="saveScreen" class="screen" aria-label="저장과 불러오기">
         <div class="page-title"><span>✦</span><h2>저장 · 불러오기</h2><p>자동 저장되며, 다른 브라우저나 PC에서도 이어할 수 있어요.</p></div>
@@ -130,7 +131,7 @@
     </section>
   </div>
   <div class="overlay" id="discoveryOverlay" hidden><section class="discovery-scene" role="dialog" aria-modal="true" aria-labelledby="foundTitle"><button class="icon-button discovery-close" id="closeDiscovery" aria-label="발견 장면 닫기">×</button><small>산책 중 작은 발견</small><div id="foundFood" class="found-food">✦</div><h2 id="foundTitle">무엇을 발견했을까?</h2><p id="foundCaption"></p><button id="foundEat" class="primary-button full">여기서 먹기</button><button id="foundPocket" class="secondary-button full">주머니에 챙기기</button></section></div>
-  <div class="overlay" id="visitOverlay" hidden><section class="visit-shell" role="dialog" aria-modal="true" aria-labelledby="visitTitle"><div class="game-top"><h2 id="visitTitle">지인의 방</h2><button class="icon-button" id="closeVisit" aria-label="방 구경 닫기">×</button></div><div class="room-preview" id="friendRoom"></div><p>지인이 공유할 때 꾸며둔 모습이에요.</p><button class="primary-button full" id="backToMyRoom">내 방 꾸미러 가기</button></section></div>
+  <div class="overlay" id="visitOverlay" hidden><section class="visit-shell" role="dialog" aria-modal="true" aria-labelledby="visitTitle"><div class="game-top"><h2 id="visitTitle">친구의 집</h2><button class="icon-button" id="closeVisit" aria-label="친구 집 나오기">×</button></div><div class="room-preview" id="friendRoom" aria-label="누르면 내 캐릭터가 이동하는 친구 집"></div><p id="visitMessage" class="visit-message" aria-live="polite">친구 집에 놀러 왔어요!</p><div class="visit-actions"><button id="visitGreet" class="secondary-button">손 흔들며 인사</button><button id="visitExplore" class="secondary-button">소품 구경하기</button></div><p>집 안을 누르면 캐릭터가 걸어요. 친구가 공유했을 때의 집 모습이에요.</p><button class="primary-button full" id="backToMyRoom">내 집으로 돌아가기</button></section></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="art.js"></script>
   <script src="food-scenes.js"></script>
