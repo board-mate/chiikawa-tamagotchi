@@ -1,0 +1,40 @@
+[hidden]{display:none!important}
+.character-switcher{display:flex;gap:7px;overflow-x:auto;padding:5px 2px 10px;scrollbar-width:thin}
+.character-switcher button{flex:0 0 62px;min-height:74px;display:grid;justify-items:center;padding:5px 2px;border:2px solid transparent;border-radius:15px;background:#fffaf1;color:var(--ink)}
+.character-switcher img{width:43px;height:43px;object-fit:contain}.character-switcher span{font-size:10px}
+.character-switcher button[aria-pressed=true]{border-color:#dba579;background:#fff0d6}
+.home-tools{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:3px 2px 10px;font-size:11px}.home-tools button{min-height:38px;border:1px dashed #cba56d;border-radius:12px;background:#fff2cc;color:#98733c;padding:7px 9px;font-size:10px}
+.outfit-sprite{position:absolute;inset:0;pointer-events:none;filter:none}
+.closet{margin-bottom:12px;padding:12px}.closet summary{min-height:28px;cursor:pointer;font-size:13px}.closet summary span{float:right;font-size:10px;color:#a08b72}
+.outfit-shop{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}.outfit-shop button{display:grid;justify-items:center;gap:4px;min-width:0;border:2px solid #eee1cb;border-radius:13px;background:#fffaf0;padding:6px;color:var(--ink)}.outfit-shop button[aria-pressed=true]{border-color:#99b68b;background:#eef4e4}.outfit-shop b{font-size:10px}.outfit-shop small{font-size:10px;color:#ad8152}
+.outfit-preview{display:block;position:relative;width:75px;height:75px}.outfit-preview img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.habitat-layer{position:absolute;inset:0;pointer-events:none;z-index:1}
+.world .pet{z-index:4}.world .speech{z-index:6}
+.habitat-house{position:absolute;width:54%;height:50%;bottom:16%;right:5%;background:#fff1c9;border:5px solid #bd9470;border-radius:5px;box-shadow:0 6px 0 #5a664328}
+.house-roof{position:absolute;width:120%;height:55%;left:-10%;top:-42%;background:#df9983;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.house-door{position:absolute;bottom:0;left:15%;width:28%;height:65%;border-radius:35px 35px 0 0;background:#b59375}.house-window{position:absolute;right:10%;top:22%;width:27%;height:35%;border:5px solid #dfbca0;background:#b4dce4;color:#fff;text-align:center}
+[data-habitat=cave]{background:linear-gradient(#8fabad 0 55%,#a6b293 55%)!important}
+.cave-rock{position:absolute;inset:6% 5% 12%;border-radius:48% 52% 9% 11%;background:radial-gradient(at 24% 25%,#c1beb2 0 9%,transparent 10%),radial-gradient(at 72% 17%,#b4b2a5 0 13%,transparent 14%),#92978e;box-shadow:inset 10px 10px #a8aca1,inset -13px -10px #777f77}
+.cave-opening{position:absolute;inset:24% 20% 0;border-radius:50% 50% 0 0;background:radial-gradient(ellipse at bottom,#aaa07d,#4b5a57 75%);border:12px solid #81887d}
+.cave-stone{position:absolute;bottom:-6px;width:40px;height:29px;border-radius:60% 40% 15% 20%;background:#7d8879}.stone-one{left:10%}.stone-two{right:13%;width:60px}
+[data-habitat=car]{background:linear-gradient(#bddfe9 0 57%,#a7bf96 57%)!important}
+.car-body{position:absolute;left:5%;right:4%;bottom:19%;height:40%;border-radius:45px 65px 16px 16px;background:#eddab3;border:5px solid #9b886a;box-shadow:inset 0 -18px #d7bc8d}
+.car-glass{position:absolute;left:17%;right:18%;top:-37%;height:70%;border:7px solid #c9b78f;border-radius:40px 45px 5px 5px;background:linear-gradient(110deg,#b2dce5 48%,#f3e5c6 49% 53%,#aad0d9 54%)}
+.car-door{position:absolute;left:48%;top:30%;height:65%;border-left:3px solid #b8a280;width:24%}.car-door:after{content:'';display:block;width:18px;height:5px;background:#a28e70;margin:12px}
+.car-wheel{position:absolute;bottom:-25px;width:45px;height:45px;border:10px solid #596061;border-radius:50%;background:#b6b8ad}.wheel-one{left:14%}.wheel-two{right:12%}.car-light{position:absolute;right:-4px;top:37%;width:18px;height:22px;border:3px solid #a28e70;border-radius:6px;background:#fff6ba}
+[data-habitat=meadow]{background:linear-gradient(#b4e0ef 0 48%,#bfdf9a 48%,#94c777)!important}
+.meadow-hill{position:absolute;left:-8%;right:-8%;height:45%;bottom:9%;border-radius:50%;background:#a4ce78}.meadow-flower{position:absolute;font-size:35px;color:#fff4c6;text-shadow:0 3px #e2a4a0}.f1{left:11%;bottom:26%}.f2{right:12%;bottom:18%;color:#f6c6d4}.f3{left:37%;bottom:10%;font-size:25px}.meadow-grass{position:absolute;right:10%;top:45%;font-size:26px;color:#639e57}
+[data-habitat=leaves]{background:linear-gradient(#bad4a1,#87a96d)!important}
+.rice-cooker{position:absolute;right:19%;top:30%;width:105px;height:90px;border:4px solid #abae98;border-radius:25px 25px 30px 30px;background:#f9f7de;box-shadow:inset -10px -8px #dfdfc5}
+.cooker-lid{position:absolute;left:-5px;right:-5px;top:-13px;height:25px;border:4px solid #a3aa94;border-radius:50%;background:#f2efd7}.cooker-lid:before{content:'';position:absolute;left:35%;top:-10px;width:30%;height:11px;border:4px solid #a3aa94;border-bottom:0;border-radius:8px 8px 0 0}.cooker-panel{position:absolute;right:30%;bottom:13px;background:#9aa58a;border-radius:8px;color:#f5d48e;padding:3px 12px}
+.leaf{position:absolute;z-index:2;width:44%;height:35%;border-radius:95% 0 95% 0;background:repeating-linear-gradient(35deg,transparent 0 23px,#5f8e3e44 24px 26px),#84b45e;border:3px solid #719a4c;box-shadow:3px 5px 0 #466f3b33}
+.leaf-one{left:-6%;top:10%;transform:rotate(27deg)}.leaf-two{right:-4%;top:9%;transform:rotate(68deg)}.leaf-three{right:0;top:41%;transform:rotate(33deg);width:36%;height:29%}.leaf-four{left:1%;bottom:12%;transform:rotate(190deg);width:29%;height:22%}
+.world[data-habitat=cave] .sun,.world[data-habitat=leaves] .sun{display:none}
+.room-preview .habitat-layer{z-index:0}.room-preview .room-rug,.room-preview .room-furniture,.room-preview .room-ornament{z-index:2}.room-preview .room-character{z-index:3}.room-preview .room-clothes{z-index:4}.room-preview .room-plaque{z-index:5}
+.room-preview[data-habitat=house] .habitat-house{display:none}
+.room-preview:not([data-habitat=house]) .room-window,.room-preview:not([data-habitat=house]) .room-floor{display:none}
+.room-preview:not([data-habitat=house]) .room-furniture{width:29%;bottom:40px;right:3%}
+.room-preview[data-habitat=leaves] .rice-cooker{right:17%;top:26%}
+.room-preview[data-habitat=car] .car-body{bottom:34%;height:30%}
+.room-preview[data-habitat=cave] .cave-rock{bottom:17%}
+@media(prefers-reduced-motion:reduce){.outfit-sprite .frame-b{display:none}.outfit-sprite .frame-a{opacity:1}}

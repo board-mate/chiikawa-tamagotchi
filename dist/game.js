@@ -3,18 +3,24 @@ const $$ = (selector) => [...document.querySelectorAll(selector)];
 const STORAGE_KEY = 'chiikawa-tamagotchi-v1';
 const characters = [
   ['치이카와', 'chiikawa'], ['하치와레', 'hachiware'], ['우사기', 'usagi'],
-  ['모몽가', 'momonga'], ['쿠리만쥬', 'kurimanju'], ['시사', 'shisa'], ['라코', 'rakko']
+  ['모몽가', 'momonga'], ['쿠리만쥬', 'kurimanju'], ['시사', 'shisa'], ['랏코', 'rakko']
 ];
 const games = {
   hunt: { title: '토벌', hint: '몬스터를 빠르게 눌러요!', help: '몬스터를 누를 때마다 공격해요.', emoji: '👾' },
   weed: { title: '제초', hint: '자라난 풀을 뽑아요!', help: '풀을 빠르게 눌러 뽑아 주세요.', emoji: '🌱' },
   forage: { title: '간식 줍기', hint: '간식만 모아요!', help: '🍓와 🍰를 누르고 🍄는 피하세요.', emoji: '🍓' }
 };
+const outfits = [
+  { id:'none', name:'기본 모습', price:0 }, { id:'vest', name:'초록 조끼', price:200 },
+  { id:'pajama', name:'구름 잠옷', price:300 }, { id:'explorer', name:'탐험 망토', price:400 }, { id:'ribbon', name:'리본 옷', price:350 }
+];
+const outfitId = value => outfits.some(o => o.id === value) ? value : 'none';
 const clamp = (n) => Math.max(0, Math.min(100, Number.isFinite(+n) ? +n : 0));
 const initialState = () => ({
   version: 1, character: 'chiikawa', createdAt: Date.now(), updatedAt: Date.now(),
   fullness: 76, mood: 82, energy: 84, clean: 100, coins: 60, sound: true,
   refusedLast: false, plays: 0, lastPatPlay: -1,
+  rooms: {}, ownedOutfits: ['none'], worn: {},
   room: { wall: 'peach', floor: 'wood', rug: 'rose', furniture: 'sofa', ornament: 'plant', name: '우리 집' }
 });
 function normalize(input) {
@@ -30,6 +36,9 @@ function normalize(input) {
     refusedLast: input.refusedLast === true,
     lastPatPlay: Number.isFinite(input.lastPatPlay) ? input.lastPatPlay : -1,
     room: sanitizeRoom(input.room),
+    rooms: Object.fromEntries(characters.filter(([,id])=>input.rooms?.[id]).map(([,id])=>[id,sanitizeRoom(input.rooms[id])])),
+    ownedOutfits: [...new Set(['none', ...(Array.isArray(input.ownedOutfits) ? input.ownedOutfits : []).map(outfitId)])],
+    worn: Object.fromEntries(characters.map(([,id])=>[id, Array.isArray(input.ownedOutfits) && input.ownedOutfits.includes(input.worn?.[id]) ? outfitId(input.worn[id]) : 'none'])),
     plays: Math.max(0, Math.floor(+input.plays || 0))
   };
 }
@@ -58,6 +67,8 @@ let motionTimer;
 let mealActive = false;
 
 function persist() {
+  state.rooms ||= {};
+  state.rooms[state.character] = sanitizeRoom(state.room);
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { showToast('자동 저장 공간이 부족해요. 저장 파일을 받아 주세요.'); }
   render();
 }
@@ -99,7 +110,12 @@ function chirp(text, label) {
 function render() {
   const image = characterUrl();
   for (const id of ['petFrameA', 'petFrameB']) if (!$('#' + id).src.endsWith(image)) $('#' + id).src = image;
-  $('#miniSprite').style.backgroundImage = `url("${image}")`;
+  const outfit = outfitId(state.worn?.[state.character]);
+  $('#miniSprite').style.backgroundImage = outfit === 'none' ? `url("${image}")` : `url("assets/outfits/${outfit}.svg"),url("${image}")`;
+  for (const id of ['petOutfitA','petOutfitB','mealOutfit']) {
+    const node = $('#' + id); if (!node) continue; node.hidden = outfit === 'none';
+    if (outfit !== 'none') node.src = 'assets/outfits/' + outfit + '.svg';
+  }
   $('#characterTag').textContent = characterName();
   $('#dayLabel').textContent = `완료한 일 ${state.plays}회 · 일할 때만 배고파요`;
   $('#coinCount').textContent = state.coins.toLocaleString('ko-KR');
@@ -113,6 +129,7 @@ function render() {
   $('#soundButton').setAttribute('aria-label', state.sound ? '소리 끄기' : '소리 켜기');
   $('#characterSelect').value = state.character;
   window.renderRoom?.();
+  window.renderWardrobe?.();
 }
 function showScreen(id) {
   $$('.screen').forEach((node) => node.classList.toggle('active', node.id === id));
@@ -283,8 +300,16 @@ $('#loadCode').addEventListener('click', () => {
 });
 $('#characterSelect').innerHTML = characters.map(([name, id]) => `<option value="${id}">${name}</option>`).join('');
 $('#characterSelect').addEventListener('change', (event) => {
-  state.character = event.target.value; setSpeech(`${characterName()}와 함께!`); persist();
+  selectCharacter(event.target.value);
 });
+function selectCharacter(id) {
+  if (!characters.some(([,key])=>key===id) || mealActive || activeGame) return;
+  state.rooms[state.character] = sanitizeRoom(state.room);
+  state.character = id;
+  state.room = sanitizeRoom(state.rooms[id]);
+  setSpeech(`${characterName()}와 함께!`); persist();
+  $('#roomLinkBox').hidden = true;
+}
 
 render();
 setSpeech(state.fullness < 25 ? '배고파… 밥 줘…' : state.clean < 50 ? '토벌 다녀와서 꼬질꼬질…' : '같이 놀자!');

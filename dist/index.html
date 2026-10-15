@@ -8,6 +8,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="room.css">
+  <link rel="stylesheet" href="wardrobe.css">
   <title>치이카와 다마고치</title>
 </head>
 <body>
@@ -20,12 +21,16 @@
     <main>
       <section id="homeScreen" class="screen active" aria-label="다마고치 돌보기">
         <div class="status-row"><span id="dayLabel">함께한 첫날</span><span class="coins">✦ <b id="coinCount">0</b></span></div>
+        <div class="character-switcher" id="characterSwitcher" aria-label="함께할 캐릭터 선택"></div>
+        <div class="home-tools"><span id="homeLabel">치이카와의 집</span><button id="testMoney">테스트 별 +10,000</button></div>
         <div class="world" id="world">
+          <div class="habitat-layer" id="homeHabitat" aria-hidden="true"></div>
           <div class="sun">☀</div><div class="cloud cloud-one">☁</div><div class="cloud cloud-two">☁</div>
           <div class="sparkle sparkle-one">✿</div><div class="sparkle sparkle-two">✿</div>
           <div class="speech" id="speech" aria-live="polite">같이 놀자!</div>
           <button class="pet" id="petButton" aria-label="캐릭터 쓰다듬기">
             <span class="sprite" id="petSprite"><img class="frame frame-a" id="petFrameA" src="assets/characters/chiikawa.png" alt=""><img class="frame frame-b" id="petFrameB" src="assets/characters/chiikawa.png" alt=""></span>
+            <span class="sprite outfit-sprite"><img class="frame frame-a" id="petOutfitA" alt="" hidden><img class="frame frame-b" id="petOutfitB" alt="" hidden></span>
             <span class="dirt" id="dirt" aria-hidden="true">✦ ⋰ ✦</span>
           </button>
           <div class="ground"></div>
@@ -38,6 +43,7 @@
           <div class="meter" data-stat="clean"><div class="meter-label"><span>✧ 깨끗함</span><b id="cleanNumber">100</b></div><div class="track"><i id="cleanBar"></i></div></div>
         </div>
         <div class="section-heading"><h2>오늘의 돌봄</h2><small>누르면 바로 반응해요</small></div>
+        <details class="closet card"><summary>옷 입히기 <span id="wearingLabel">기본 모습</span></summary><div id="outfitShop" class="outfit-shop"></div></details>
         <div class="care-grid">
           <button class="care-button" data-action="rice"><span>🍙</span><b>주먹밥</b><small>든든하게</small></button>
           <button class="care-button" data-action="pancake"><span>🥞</span><b>핫케이크</b><small>달콤하게</small></button>
@@ -103,5 +109,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="game.js"></script>
   <script src="room.js"></script>
+  <script src="wardrobe.js"></script>
 </body>
 </html>
