@@ -1,0 +1,45 @@
+.bottom-nav{grid-template-columns:repeat(3,1fr)}
+.room-preview{position:relative;isolation:isolate;height:300px;overflow:hidden;border:4px solid #fff;border-radius:24px;background:#f6d8cb;box-shadow:var(--shadow)}
+.room-preview[data-wall=mint]{background:#d1e4d7}.room-preview[data-wall=lavender]{background:#e1d6ec}
+.room-window{position:absolute;left:17%;top:24px;width:86px;height:90px;border:7px solid #fff8e8;border-radius:40px 40px 4px 4px;background:linear-gradient(#b1d9ef,#e0f2f3);box-shadow:0 3px 0 #b79e8830}
+.room-window:before,.room-window:after{content:'';position:absolute;background:#fff8e8}.room-window:before{width:7px;height:100%;left:calc(50% - 3px)}.room-window:after{height:6px;width:100%;top:50%}.room-window span{color:white;font-size:28px}
+.room-floor{position:absolute;z-index:-1;bottom:0;width:100%;height:39%;border-top:7px solid #b79a78;background:repeating-linear-gradient(0deg,#dac3a5 0 27px,#cbb18e 28px 30px)}
+[data-floor=cream] .room-floor{background:#ece4ce}[data-floor=tile] .room-floor{background:conic-gradient(#ded6ca 25%,#faf1e1 0 50%,#ded6ca 0 75%,#faf1e1 0) 0 0/45px 45px}
+.room-rug{position:absolute;bottom:30px;left:18%;width:66%;height:66px;border-radius:50%;background:#e1a7ad;border:5px solid #f6cdd0;box-shadow:0 4px 0 #b8948460}
+[data-rug=blue] .room-rug{background:#a5c6dc;border-color:#d2e5ed}[data-rug=leaf] .room-rug{background:#abc295;border-color:#d3dfbe}
+.room-furniture{position:absolute;right:5%;bottom:80px;width:45%;max-width:170px}.room-furniture svg{display:block;width:100%;filter:drop-shadow(0 5px 2px #8a6b4933)}
+.room-ornament{position:absolute;right:9%;top:24px;font-size:38px}
+.room-character{position:absolute;left:19%;bottom:44px;width:116px;height:116px;object-fit:contain;filter:drop-shadow(0 7px 2px #927b5540);animation:room-pose .7s steps(1) infinite}
+.room-plaque{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#fff9ef;padding:4px 12px;border-radius:16px;font-size:11px}
+.room-controls input,.room-controls select{width:100%;min-height:44px;padding:9px;border:1px solid #e7dcc9;border-radius:10px;background:#fffdf9;color:var(--ink);font:inherit;font-size:13px}
+.decor-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-bottom:17px}.decor-grid label{margin-top:10px;font-size:11px}.decor-grid select{display:block;margin-top:5px}
+.visit-shell,.meal-scene{width:min(100%,470px);max-height:95dvh;overflow:auto;padding:18px;border:3px solid white;border-radius:25px;background:var(--cream);box-shadow:0 14px 40px #32281855}
+.visit-shell .room-preview{margin-top:15px}.visit-shell h2{font-size:19px;overflow-wrap:anywhere}.visit-shell p{font-size:11px;text-align:center;color:var(--muted)}
+.meal-heading{display:flex;align-items:center;justify-content:space-between;color:#af8c68;font-size:12px}.meal-scene h2{text-align:center;margin:8px 0 4px;font-size:22px}
+.meal-stage{position:relative;height:270px;overflow:hidden;border-radius:21px;background:radial-gradient(ellipse at center,#fff9d7,#f4dcca)}
+.meal-stage>img{position:absolute;left:50%;top:35px;transform:translateX(-50%);width:180px;height:180px;object-fit:contain;filter:drop-shadow(0 4px 3px #a57e4d25)}
+.meal-table{position:absolute;bottom:20px;left:7%;width:86%;height:56px;border-radius:50%;border-bottom:9px solid #b6926f;background:#dfb58c;box-shadow:0 10px 0 -6px #8f6f5750;text-align:center}
+.meal-table>span{display:inline-block;position:relative;top:-23px;min-width:96px;padding-bottom:4px;border-bottom:7px solid #fff8e9;border-radius:50%;font-size:46px;filter:drop-shadow(0 2px 2px #82634b22)}
+.meal-bite{position:absolute;z-index:2;left:calc(50% + 15px);top:160px;font-size:30px;opacity:0}
+.meal-hearts{position:absolute;top:12px;left:0;right:0;color:#dc8995;font-size:31px;text-align:center;opacity:0}
+.meal-crumbs{position:absolute;z-index:3;left:calc(50% - 35px);top:132px;font-size:30px;color:#af8153;opacity:0}
+.meal-scene>p{min-height:24px;text-align:center;font-size:13px;color:#9e8065}
+.scene-dots{display:flex;justify-content:center;gap:8px;margin:12px}.scene-dots i{width:8px;height:8px;border-radius:50%;background:#e7d6bf}
+[data-phase=ready] .scene-dots i:first-child,[data-phase=chew] .scene-dots i:nth-child(2),[data-phase=happy] .scene-dots i:last-child{background:#d29868}
+[data-phase=ready] .meal-stage>img{animation:meal-enter .7s ease-out both}
+[data-phase=chew] .meal-stage>img{animation:meal-chew .32s steps(1) infinite}
+[data-phase=chew] .meal-bite{opacity:1;animation:meal-bite .65s steps(2) infinite}
+[data-phase=chew] .meal-crumbs{animation:crumbs .32s steps(1) infinite}
+[data-phase=chew] .meal-table>span{animation:meal-shrink 1.6s steps(3) forwards}
+[data-phase=happy] .meal-table>span{font-size:0;height:18px;top:-4px}
+[data-phase=happy] .meal-stage>img{animation:meal-happy .5s ease-in-out 2}
+[data-phase=happy] .meal-hearts{opacity:1;animation:happy-hearts .8s ease-in-out infinite alternate}
+@keyframes room-pose{50%{transform:rotate(-4deg) translateY(-3px)}}
+@keyframes meal-enter{from{transform:translate(-50%,35px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+@keyframes meal-chew{0%,100%{transform:translateX(-50%) rotate(-3deg) scale(1.03,.98)}50%{transform:translate(-50%,-4px) rotate(3deg) scale(.98,1.03)}}
+@keyframes meal-bite{0%{transform:translateY(15px) scale(1)}50%,100%{transform:translate(-21px,-24px) scale(.5)}}
+@keyframes crumbs{50%{opacity:1;transform:translateY(4px)}}
+@keyframes meal-shrink{to{transform:scale(.3)}}
+@keyframes meal-happy{50%{transform:translate(-50%,-16px) rotate(5deg)}}
+@keyframes happy-hearts{to{transform:translateY(-5px) scale(1.1)}}
+@media(prefers-reduced-motion:reduce){.meal-stage *, .room-character{animation:none!important}[data-phase=chew] .meal-crumbs{opacity:1}}

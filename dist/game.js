@@ -1,7 +1,6 @@
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 const STORAGE_KEY = 'chiikawa-tamagotchi-v1';
-const STEP_MS = 90000;
 const characters = [
   ['치이카와', 'chiikawa'], ['하치와레', 'hachiware'], ['우사기', 'usagi'],
   ['모몽가', 'momonga'], ['쿠리만쥬', 'kurimanju'], ['시사', 'shisa'], ['라코', 'rakko']
@@ -15,7 +14,8 @@ const clamp = (n) => Math.max(0, Math.min(100, Number.isFinite(+n) ? +n : 0));
 const initialState = () => ({
   version: 1, character: 'chiikawa', createdAt: Date.now(), updatedAt: Date.now(),
   fullness: 76, mood: 82, energy: 84, clean: 100, coins: 60, sound: true,
-  lastRefusalAt: 0, lastNapAt: 0, plays: 0
+  refusedLast: false, plays: 0, lastPatPlay: -1,
+  room: { wall: 'peach', floor: 'wood', rug: 'rose', furniture: 'sofa', ornament: 'plant', name: '우리 집' }
 });
 function normalize(input) {
   if (!input || input.version !== 1 || !characters.some(([, id]) => id === input.character)) throw new Error('지원하지 않는 저장 데이터');
@@ -27,8 +27,9 @@ function normalize(input) {
     fullness: clamp(input.fullness), mood: clamp(input.mood), energy: clamp(input.energy), clean: clamp(input.clean),
     coins: Math.max(0, Math.min(999999, Math.floor(+input.coins || 0))),
     sound: input.sound !== false,
-    lastRefusalAt: Number.isFinite(+input.lastRefusalAt) ? +input.lastRefusalAt : 0,
-    lastNapAt: Number.isFinite(+input.lastNapAt) ? +input.lastNapAt : 0,
+    refusedLast: input.refusedLast === true,
+    lastPatPlay: Number.isFinite(input.lastPatPlay) ? input.lastPatPlay : -1,
+    room: sanitizeRoom(input.room),
     plays: Math.max(0, Math.floor(+input.plays || 0))
   };
 }
@@ -54,21 +55,19 @@ let state = loadInitial();
 let activeGame = null;
 let toastTimer;
 let motionTimer;
-let lastPetAt = 0;
+let mealActive = false;
 
 function persist() {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { showToast('자동 저장 공간이 부족해요. 저장 파일을 받아 주세요.'); }
   render();
 }
-function advanceTime() {
-  const now = Date.now();
-  const steps = Math.floor(Math.min(24 * 60 * 60 * 1000, Math.max(0, now - state.updatedAt)) / STEP_MS);
-  if (!steps) return;
-  state.fullness = clamp(state.fullness - steps * 2);
-  state.mood = clamp(state.mood - steps);
-  state.energy = clamp(state.energy - Math.floor(steps / 2));
-  state.updatedAt = now - ((now - state.updatedAt) % STEP_MS);
-  persist();
+function sanitizeRoom(room) {
+  const defaults = initialState().room;
+  const choices = { wall: ['peach','mint','lavender'], floor: ['wood','cream','tile'], rug: ['rose','blue','leaf'], furniture: ['sofa','bed','desk'], ornament: ['plant','bear','lamp'] };
+  const result = { ...defaults };
+  for (const key of Object.keys(choices)) if (choices[key].includes(room?.[key])) result[key] = room[key];
+  if (typeof room?.name === 'string') result.name = room.name.trim().slice(0, 24) || defaults.name;
+  return result;
 }
 function characterName() { return characters.find(([, id]) => id === state.character)?.[0] || '치이카와'; }
 function characterUrl() { return `assets/characters/${state.character}.png`; }
@@ -102,7 +101,7 @@ function render() {
   for (const id of ['petFrameA', 'petFrameB']) if (!$('#' + id).src.endsWith(image)) $('#' + id).src = image;
   $('#miniSprite').style.backgroundImage = `url("${image}")`;
   $('#characterTag').textContent = characterName();
-  $('#dayLabel').textContent = `함께한 ${Math.max(1, Math.floor((Date.now() - state.createdAt) / 86400000) + 1)}일째`;
+  $('#dayLabel').textContent = `완료한 일 ${state.plays}회 · 일할 때만 배고파요`;
   $('#coinCount').textContent = state.coins.toLocaleString('ko-KR');
   for (const stat of ['fullness', 'mood', 'energy', 'clean']) {
     $('#' + stat + 'Number').textContent = Math.round(state[stat]);
@@ -113,6 +112,7 @@ function render() {
   $('#soundButton').textContent = state.sound ? '♪' : '♩';
   $('#soundButton').setAttribute('aria-label', state.sound ? '소리 끄기' : '소리 켜기');
   $('#characterSelect').value = state.character;
+  window.renderRoom?.();
 }
 function showScreen(id) {
   $$('.screen').forEach((node) => node.classList.toggle('active', node.id === id));
@@ -122,20 +122,20 @@ function showScreen(id) {
 $$('[data-screen]').forEach((button) => button.addEventListener('click', () => showScreen(button.dataset.screen)));
 
 function care(action) {
-  advanceTime();
-  const now = Date.now();
+  if (mealActive || activeGame) return;
   if (action === 'rice' || action === 'pancake') {
     if (state.fullness >= 96) { showToast('이미 배가 불러요!'); chirp('うな！', '배불러~!'); return; }
     const chance = action === 'pancake' ? .36 : .22;
-    if (now - state.lastRefusalAt > 28000 && Math.random() < chance) {
-      state.lastRefusalAt = now; state.mood = clamp(state.mood - 2);
+    if (!state.refusedLast && Math.random() < chance) {
+      state.refusedLast = true; state.mood = clamp(state.mood - 2);
       react('refusing'); chirp('やだ！', '야다! 지금은 안 먹을래.');
-      showToast('고개를 도리도리! 조금 있다 다시 줘봐요.'); persist(); return;
+      showToast('고개를 도리도리! 한 번 더 권해봐요.'); persist(); return;
     }
     state.fullness = clamp(state.fullness + (action === 'rice' ? 30 : 19));
     state.mood = clamp(state.mood + (action === 'pancake' ? 7 : 3));
+    state.refusedLast = false;
     react(); chirp('うな！', action === 'rice' ? '우나! 주먹밥 냠냠!' : '우나! 핫케이크 맛있어!');
-    persist(); return;
+    persist(); window.playMeal(action); return;
   }
   if (action === 'bath') {
     if (state.clean >= 98) { showToast('이미 보송보송해요!'); return; }
@@ -143,16 +143,16 @@ function care(action) {
     react(); chirp('うな！', '뽀득뽀득! 우나!'); persist(); return;
   }
   if (action === 'nap') {
-    if (now - state.lastNapAt < 15000) { showToast('아직 잠이 덜 왔대요. 잠깐 뒤 다시 해봐요.'); return; }
     if (state.energy >= 96) { showToast('기운이 넘쳐서 잠이 안 와요!'); return; }
-    state.lastNapAt = now; state.energy = clamp(state.energy + 27);
+    state.energy = clamp(state.energy + 27);
     react('sleeping'); chirp('うな…', '쿠울… 잠깐 쉬는 중'); persist();
   }
 }
 $$('[data-action]').forEach((button) => button.addEventListener('click', () => care(button.dataset.action)));
 $('#petButton').addEventListener('click', () => {
-  if (Date.now() - lastPetAt < 2500) return;
-  lastPetAt = Date.now(); state.mood = clamp(state.mood + 2);
+  if (mealActive) return;
+  if (state.lastPatPlay !== state.plays) state.mood = clamp(state.mood + 2);
+  state.lastPatPlay = state.plays;
   react(); chirp('うな！', '우나! 쓰다듬어줘서 좋아!'); persist();
 });
 $('#soundButton').addEventListener('click', () => {
@@ -186,11 +186,10 @@ function stopGame(award) {
   const earned = Math.max(0, score) * 6;
   state.coins += earned; state.plays++;
   state.energy = clamp(state.energy - (mode === 'hunt' ? 14 : 10));
-  state.fullness = clamp(state.fullness - 4);
+  state.fullness = clamp(state.fullness - ({ hunt: 18, weed: 12, forage: 10 }[mode]));
   state.mood = clamp(state.mood + 5);
   if (mode === 'hunt') state.clean = clamp(state.clean - 40);
   if (mode === 'weed') state.clean = clamp(state.clean - 12);
-  if (mode === 'forage') state.fullness = clamp(state.fullness + Math.min(18, score * 3));
   persist();
   $('#gameResult').hidden = false;
   $('#resultEmoji').textContent = mode === 'hunt' ? '⚔️' : mode === 'weed' ? '🌱' : '🍓';
@@ -207,8 +206,8 @@ function gameLoop(now) {
   activeGame.frame = requestAnimationFrame(gameLoop);
 }
 function startGame(mode) {
-  advanceTime();
-  if (state.energy < 10) { showToast('기운이 부족해요. 낮잠을 자고 와요!'); return; }
+  if (mealActive) return;
+  if (state.energy < (mode === 'hunt' ? 14 : 10)) { showToast('기운이 부족해요. 낮잠을 자고 와요!'); return; }
   if (activeGame) stopGame(false);
   $('#gameOverlay').hidden = false;
   $('#gameStage').hidden = false;
@@ -241,15 +240,14 @@ $('#resultClose').addEventListener('click', () => { $('#gameOverlay').hidden = t
 document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !$('#gameOverlay').hidden) $('#closeGame').click(); });
 document.addEventListener('visibilitychange', () => {
   if (document.hidden && activeGame) stopGame(false);
-  if (!document.hidden) advanceTime();
 });
 
-function exportData() { advanceTime(); return JSON.stringify(state); }
+function exportData() { return JSON.stringify(state); }
 function applyImport(raw) {
   const next = normalize(JSON.parse(raw));
   if (next.createdAt > Date.now() + 86400000) throw new Error('날짜가 올바르지 않아요');
   if (activeGame) stopGame(false);
-  state = next; advanceTime(); persist(); showScreen('homeScreen');
+  state = next; persist(); showScreen('homeScreen');
   setSpeech('다시 만나서 반가워!'); showToast('저장 데이터를 불러왔어요!');
 }
 $('#downloadSave').addEventListener('click', () => {
@@ -288,7 +286,6 @@ $('#characterSelect').addEventListener('change', (event) => {
   state.character = event.target.value; setSpeech(`${characterName()}와 함께!`); persist();
 });
 
-advanceTime(); render();
+render();
 setSpeech(state.fullness < 25 ? '배고파… 밥 줘…' : state.clean < 50 ? '토벌 다녀와서 꼬질꼬질…' : '같이 놀자!');
-setInterval(advanceTime, 10000);
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
