@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="room.css">
   <link rel="stylesheet" href="wardrobe.css">
+  <link rel="stylesheet" href="art.css">
   <title>치이카와 다마고치</title>
 </head>
 <body>
@@ -92,7 +93,7 @@
     <div class="game-shell" role="dialog" aria-modal="true" aria-labelledby="gameTitle">
       <div class="game-top"><div><small>10초 미니게임</small><h2 id="gameTitle">토벌</h2></div><button id="closeGame" class="icon-button" aria-label="게임 닫기">×</button></div>
       <div class="game-hud"><div><small>남은 시간</small><b id="gameTime">10.0</b></div><div><small>점수</small><b id="gameScore">0</b></div></div>
-      <div class="game-stage" id="gameStage"><div class="game-hint" id="gameHint">대상을 눌러 주세요!</div><div class="game-pet"><span class="mini-sprite" id="miniSprite"></span></div><button id="gameTarget" class="game-target" aria-label="목표 누르기">👾</button></div>
+      <div class="game-stage" id="gameStage"><div class="game-hint" id="gameHint">대상을 눌러 주세요!</div><div class="game-pet"><span class="mini-sprite" id="miniSprite"></span><svg class="hunting-pole" viewBox="0 0 200 100" aria-hidden="true"><g stroke="#493c40" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 68H157" stroke-width="11"/><path d="M13 68H157" stroke="#efa8bc" stroke-width="6"/><path d="M186 40C144 36 140 95 186 94" fill="none" stroke-width="12"/><path d="M186 40C144 36 140 95 186 94" fill="none" stroke="#efa8bc" stroke-width="7"/><path d="M42 59q-11-9-17 1q-5 12 9 15q12 0 8-16M91 58q-9-8-15 1q-6 12 7 15q13 1 8-16" fill="var(--paw,#fff)"/></g></svg><span class="impact-ring"></span></div><button id="gameTarget" class="game-target" aria-label="목표 누르기">👾</button></div>
       <div class="game-result" id="gameResult" hidden><div id="resultEmoji">🎉</div><h3 id="resultTitle">잘했어!</h3><p id="resultText"></p><button id="resultClose" class="primary-button full">돌아가기</button></div>
       <p class="game-help" id="gameHelp">화면 속 대상을 빠르게 눌러 주세요.</p>
     </div>
@@ -107,6 +108,7 @@
   </div>
   <div class="overlay" id="visitOverlay" hidden><section class="visit-shell" role="dialog" aria-modal="true" aria-labelledby="visitTitle"><div class="game-top"><h2 id="visitTitle">지인의 방</h2><button class="icon-button" id="closeVisit" aria-label="방 구경 닫기">×</button></div><div class="room-preview" id="friendRoom"></div><p>지인이 공유할 때 꾸며둔 모습이에요.</p><button class="primary-button full" id="backToMyRoom">내 방 꾸미러 가기</button></section></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="art.js"></script>
   <script src="game.js"></script>
   <script src="room.js"></script>
   <script src="wardrobe.js"></script>

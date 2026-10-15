@@ -9,7 +9,10 @@ window.renderWardrobe = () => {
   $$('[data-character]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.character === state.character)));
   $$('[data-outfit]').forEach(button => {
     const item = outfits.find(item => item.id === button.dataset.outfit);
-    button.querySelector('.shop-body').src = characterUrl();
+    const composite = paintCharacter(button.querySelector('.shop-body'),state.character,item.id);
+    const clothes = button.querySelector('.shop-clothes');
+    clothes.hidden = item.id === 'none' || composite;
+    if (item.id !== 'none') clothes.src = outfitUrl(state.character,item.id);
     button.querySelector('small').textContent = current === item.id ? '입고 있어요' : state.ownedOutfits.includes(item.id) ? '입기' : '✦ ' + item.price;
     button.setAttribute('aria-pressed', String(current === item.id));
   });

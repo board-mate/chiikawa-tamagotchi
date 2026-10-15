@@ -1,0 +1,24 @@
+.drawn-outfit{background-image:url('assets/sprites/chiikawa-outfits-v4.png');background-size:400% 133.333%;background-repeat:no-repeat}
+/* A single aligned body and clothing layer breathes together at rest. */
+.frame-a{animation:breathe 2.4s ease-in-out infinite;opacity:1}.frame-b{display:none}
+@keyframes breathe{50%{transform:translateY(-2px) scale(1.008,.992)}}
+.outfit-sprite{filter:none!important}.room-clothes{filter:none!important}
+.hunt .game-pet{width:150px;height:190px;left:3%;bottom:16px}
+.hunt .mini-sprite{animation:none;position:absolute;inset:auto 0 0;height:150px}
+.hunt .game-pet[data-drawn=true] .mini-sprite{height:200px;background-image:url('assets/sprites/chiikawa-hunt-v4.png')!important;background-size:400% 100%!important;background-position:0 0!important}
+.hunt .game-pet[data-drawn=true][data-pose="1"] .mini-sprite{background-position:33.333333% 0!important}
+.hunt .game-pet[data-drawn=true][data-pose="2"] .mini-sprite{background-position:66.666667% 0!important}
+.hunt .game-pet[data-drawn=true][data-pose="3"] .mini-sprite{background-position:100% 0!important}
+.hunt .game-pet.attack{animation:none}
+.hunt .game-pet[data-drawn=false][data-pose="1"]{transform:translateX(-6px) rotate(-5deg)}
+.hunt .game-pet[data-drawn=false][data-pose="2"]{transform:translateX(22px) rotate(4deg)}
+.hunt .game-pet[data-drawn=false][data-pose="3"]{transform:translateX(9px)}
+.hunting-pole{display:none;position:absolute;left:20%;bottom:5%;width:130%;height:65%;overflow:visible;transform-origin:28% 65%;pointer-events:none}
+.hunt [data-drawn=false] .hunting-pole{display:block;transform:rotate(-15deg)}
+.hunt [data-drawn=false][data-pose="1"] .hunting-pole{transform:rotate(-55deg)}
+.hunt [data-drawn=false][data-pose="2"] .hunting-pole{transform:rotate(0deg) translateX(5px)}
+.hunt [data-drawn=false][data-pose="3"] .hunting-pole{transform:rotate(-8deg)}
+.impact-ring{position:absolute;right:-5%;bottom:32%;width:44px;height:44px;border:5px solid #fff2ad;border-radius:50%;opacity:0;pointer-events:none}
+.hunt [data-pose="2"] .impact-ring{opacity:1;box-shadow:0 0 0 8px #ffefae44}
+.hunt .game-target{background:#edf4df;border:3px solid #fff8df;box-shadow:0 5px 0 #60764a44}
+@media(prefers-reduced-motion:reduce){.frame-a{animation:none}.hunt .game-pet{transform:none!important}}

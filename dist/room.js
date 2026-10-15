@@ -27,10 +27,10 @@ function drawRoom(element, room, characterId, outfit = 'none') {
   element.innerHTML = '<div class="habitat-layer" aria-hidden="true">' + habitatMarkup(characterId) + '</div><div class="room-window"><span>☁</span></div><div class="room-floor"></div><div class="room-rug"></div><div class="room-furniture">' + furnitureArt[room.furniture] + '</div><span class="room-ornament"></span><img class="room-character" alt=""><img class="room-character room-clothes" alt="" hidden><span class="room-plaque"></span>';
   const clothes = element.querySelector('.room-clothes');
   outfit = outfitId(outfit);
-  if (outfit !== 'none') { clothes.src = 'assets/outfits/' + outfit + '.svg'; clothes.hidden = false; }
+  if (outfit !== 'none') { clothes.src = outfitUrl(characterId,outfit); clothes.hidden = characterId === 'chiikawa'; }
   element.querySelector('.room-ornament').textContent = { plant: '🪴', bear: '🧸', lamp: '💡' }[room.ornament];
   const image = element.querySelector('img');
-  image.src = 'assets/characters/' + characterId + '.png';
+  paintCharacter(image,characterId,outfit);
   image.alt = characters.find(([, id]) => id === characterId)?.[0] || '';
   element.querySelector('.room-plaque').textContent = room.name;
 }
@@ -117,7 +117,7 @@ window.playMeal = (action) => {
   mealTimers.forEach(clearTimeout); mealTimers = []; mealActive = true;
   const scene = $('.meal-scene'), food = action === 'rice' ? '🍙' : '🥞';
   scene.dataset.phase = 'ready';
-  $('#mealPet').src = characterUrl();
+  paintCharacter($('#mealPet'),state.character,outfitId(state.worn?.[state.character]));
   $('#mealFood').textContent = food; $('#mealBite').textContent = food;
   $('#mealTitle').textContent = '잘 먹겠습니다!';
   $('#mealCaption').textContent = '밥상 앞으로 총총…';

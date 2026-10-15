@@ -109,12 +109,12 @@ function chirp(text, label) {
 }
 function render() {
   const image = characterUrl();
-  for (const id of ['petFrameA', 'petFrameB']) if (!$('#' + id).src.endsWith(image)) $('#' + id).src = image;
+  for (const id of ['petFrameA', 'petFrameB']) paintCharacter($('#' + id),state.character,outfitId(state.worn?.[state.character]));
   const outfit = outfitId(state.worn?.[state.character]);
-  $('#miniSprite').style.backgroundImage = outfit === 'none' ? `url("${image}")` : `url("assets/outfits/${outfit}.svg"),url("${image}")`;
+  $('#miniSprite').style.backgroundImage = outfit === 'none' ? `url("${image}")` : `url("${outfitUrl(state.character,outfit)}"),url("${image}")`;
   for (const id of ['petOutfitA','petOutfitB','mealOutfit']) {
-    const node = $('#' + id); if (!node) continue; node.hidden = outfit === 'none';
-    if (outfit !== 'none') node.src = 'assets/outfits/' + outfit + '.svg';
+    const node = $('#' + id); if (!node) continue; node.hidden = outfit === 'none' || state.character === 'chiikawa';
+    if (outfit !== 'none') node.src = outfitUrl(state.character,outfit);
   }
   $('#characterTag').textContent = characterName();
   $('#dayLabel').textContent = `완료한 일 ${state.plays}회 · 일할 때만 배고파요`;
@@ -190,12 +190,14 @@ function moveTarget() {
   target.textContent = item.emoji;
   target.setAttribute('aria-label', item.points < 0 ? '피해야 하는 버섯' : '목표 누르기');
   const width = Math.max(70, stage.clientWidth - 82), height = Math.max(80, stage.clientHeight - 145);
-  target.style.left = `${Math.round(15 + Math.random() * (width - 15))}px`;
-  target.style.top = `${Math.round(55 + Math.random() * (height - 40))}px`;
+  const minX = activeGame.mode === 'hunt' ? Math.min(stage.clientWidth * .53, width) : 15;
+  target.style.left = `${Math.round(minX + Math.random() * (width - minX))}px`;
+  target.style.top = activeGame.mode === 'hunt' ? `${stage.clientHeight - 110 - Math.random() * 25}px` : `${Math.round(55 + Math.random() * (height - 40))}px`;
   activeGame.lastMove = performance.now();
 }
 function stopGame(award) {
   if (!activeGame) return;
+  resetAttack();
   cancelAnimationFrame(activeGame.frame);
   const { mode, score } = activeGame;
   activeGame = null;
@@ -230,6 +232,7 @@ function startGame(mode) {
   $('#gameStage').hidden = false;
   $('#gameResult').hidden = true;
   $('#gameStage').className = 'game-stage ' + mode;
+  prepareActor(mode);
   $('#gameTitle').textContent = games[mode].title;
   $('#gameHint').textContent = games[mode].hint;
   $('#gameHelp').textContent = games[mode].help;
@@ -244,8 +247,7 @@ $('#gameTarget').addEventListener('click', () => {
   if (!activeGame) return;
   activeGame.score = Math.max(0, activeGame.score + activeGame.targetPoints);
   $('#gameScore').textContent = activeGame.score;
-  const actor = $('.game-pet'); actor.classList.remove('attack'); void actor.offsetWidth; actor.classList.add('attack');
-  setTimeout(() => actor.classList.remove('attack'), 260);
+  animateAttack();
   if (activeGame.targetPoints < 0) showToast('버섯은 간식이 아니야!');
   moveTarget();
 });
