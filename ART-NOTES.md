@@ -1,5 +1,13 @@
 # Visual update v4
 
+## v5: Pajama Parties, dirt, and food scenes
+
+`dist/assets/sprites/chiikawa-party-v5.png` was generated with the built-in image generation tool, using the original Chiikawa PNG as the identity reference. Prompt: transparent 2D four-cell horizontal sprite sheet; identical front-facing Chiikawa wearing plain hooded all-in-one Pajama Parties style sleep suits in pink, lavender, mint, and warm white. Floppy sleeping hood and white pompom, visible round ears and open white face, tiny white paws in front, round buttons and collar tie, matching feet. Consistent scale and baseline; flat black linework, generous padding, no text, borders, shadows, or background.
+
+Native fitted SVG versions are used on the other characters. Mud SVGs place irregular brown marks directly on the face, body, paws, and clothing. The mud layer follows the character's movement, grows stronger as cleanliness drops, and disappears after bathing. Room snapshots retain cleanliness; old snapshots default to clean.
+
+Food scene reference: https://www.youtube.com/watch?v=DBA99It6Q_w (user-provided). Verified player frames at 5 seconds (giant pancake), 15 seconds (oden), 20 seconds (radish), and 25 seconds (Rakko parfait). The five foods open short matching segments through the YouTube embedded player; replay does not award food stats. Video availability and autoplay depend on YouTube and browser settings. Closing the scene unloads the player.
+
 Generated using the built-in image generation tool with the existing Chiikawa PNG as identity reference. Original transparent PNGs are retained and displayed using CSS sprite-sheet viewports (four columns).
 
 ## Hunting sheet

@@ -1,9 +1,10 @@
 const mealClothes = document.createElement('img');
 mealClothes.id = 'mealOutfit'; mealClothes.alt = ''; mealClothes.hidden = true;
 $('#mealPet').after(mealClothes);
+const mealDirt = document.createElement('img');mealDirt.id='mealDirt';mealDirt.alt='';mealDirt.hidden=true;mealClothes.after(mealDirt);
 $('#characterSwitcher').innerHTML = characters.map(([name,id]) => '<button data-character="' + id + '" aria-pressed="false"><img src="assets/characters/' + id + '.png" alt=""><span>' + name + '</span></button>').join('');
 $$('[data-character]').forEach(button => button.addEventListener('click', () => selectCharacter(button.dataset.character)));
-$('#outfitShop').innerHTML = outfits.map(item => '<button data-outfit="' + item.id + '"><span class="outfit-preview"><img class="shop-body" alt=""><img class="shop-clothes" alt=""' + (item.id === 'none' ? ' hidden' : ' src="assets/outfits/' + item.id + '.svg"') + '></span><b>' + item.name + '</b><small></small></button>').join('');
+$('#outfitShop').innerHTML = outfits.map(item => '<button data-outfit="' + item.id + '"><span class="outfit-preview"><img class="shop-body" alt=""><img class="shop-clothes" alt=""' + (item.id === 'none' ? ' hidden' : ' src="assets/outfits/fitted/chiikawa-' + item.id + '.svg"') + '></span><b>' + item.name + '</b><small></small></button>').join('');
 window.renderWardrobe = () => {
   const current = outfitId(state.worn?.[state.character]);
   $$('[data-character]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.character === state.character)));

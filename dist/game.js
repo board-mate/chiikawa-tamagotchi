@@ -12,7 +12,9 @@ const games = {
 };
 const outfits = [
   { id:'none', name:'기본 모습', price:0 }, { id:'vest', name:'초록 조끼', price:200 },
-  { id:'pajama', name:'구름 잠옷', price:300 }, { id:'explorer', name:'탐험 망토', price:400 }, { id:'ribbon', name:'리본 옷', price:350 }
+  { id:'pajama', name:'구름 잠옷', price:300 }, { id:'explorer', name:'탐험 망토', price:400 }, { id:'ribbon', name:'리본 옷', price:350 },
+  {id:'party-pink',name:'파자마 파티 · 분홍',price:500}, {id:'party-purple',name:'파자마 파티 · 보라',price:500},
+  {id:'party-mint',name:'파자마 파티 · 민트',price:500}, {id:'party-white',name:'파자마 파티 · 흰색',price:500}
 ];
 const outfitId = value => outfits.some(o => o.id === value) ? value : 'none';
 const clamp = (n) => Math.max(0, Math.min(100, Number.isFinite(+n) ? +n : 0));
@@ -123,7 +125,7 @@ function render() {
     $('#' + stat + 'Number').textContent = Math.round(state[stat]);
     $('#' + stat + 'Bar').style.width = state[stat] + '%';
   }
-  $('#dirt').classList.toggle('visible', state.clean < 70);
+  updateDirt();
   $('#world').classList.toggle('messy', state.clean < 70);
   $('#soundButton').textContent = state.sound ? '♪' : '♩';
   $('#soundButton').setAttribute('aria-label', state.sound ? '소리 끄기' : '소리 켜기');
@@ -140,18 +142,20 @@ $$('[data-screen]').forEach((button) => button.addEventListener('click', () => s
 
 function care(action) {
   if (mealActive || activeGame) return;
-  if (action === 'rice' || action === 'pancake') {
-    if (state.fullness >= 96) { showToast('이미 배가 불러요!'); chirp('うな！', '배불러~!'); return; }
-    const chance = action === 'pancake' ? .36 : .22;
+  if (action === 'rice' || foodScenes[action]) {
+    const food = foodScenes[action];
+    if (state.fullness >= 96) { showToast(food ? '배가 불러요! 장면 다시 보기로 감상할 수 있어요.' : '이미 배가 불러요!'); chirp('うな！', '배불러~!'); return; }
+    const chance = food ? .12 : .22;
     if (!state.refusedLast && Math.random() < chance) {
       state.refusedLast = true; state.mood = clamp(state.mood - 2);
       react('refusing'); chirp('やだ！', '야다! 지금은 안 먹을래.');
       showToast('고개를 도리도리! 한 번 더 권해봐요.'); persist(); return;
     }
-    state.fullness = clamp(state.fullness + (action === 'rice' ? 30 : 19));
-    state.mood = clamp(state.mood + (action === 'pancake' ? 7 : 3));
+    state.fullness = clamp(state.fullness + (food?.fullness || 30));
+    state.mood = clamp(state.mood + (food?.mood || 3));
     state.refusedLast = false;
-    react(); chirp('うな！', action === 'rice' ? '우나! 주먹밥 냠냠!' : '우나! 핫케이크 맛있어!');
+    react(); setSpeech('우나! ' + (food?.name || '주먹밥') + ' 냠냠!');
+    if (!food) chirp('うな！','우나! 주먹밥 냠냠!');
     persist(); window.playMeal(action); return;
   }
   if (action === 'bath') {
