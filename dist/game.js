@@ -69,6 +69,23 @@ let activeGame = null;
 let toastTimer;
 let motionTimer;
 let mealActive = false;
+const characterLines = {
+  chiikawa: { touch:['ワ… ワ…','ハァ〜','アァン〜'], happy:'ワァ〜！', refuse:'アァン〜', rest:'ハァ〜' },
+  hachiware: { touch:['なんとかなれーッ！','心がふたつある〜','ちょっと待って、中にジュースみたいなのが入ってて、おいしいんだよ！'], happy:'やったー！', refuse:'今はおなかいっぱいだよ〜', rest:'ちょっと休もう〜' },
+  usagi: { touch:['ヤハ！！','ウラ〜','プルャ〜','ウワ〜'], happy:'ヤハ！！', refuse:'ウラ〜！', rest:'プルャ〜' },
+  momonga: { touch:['それ、よこせ！','ふえええええ〜ん！','チラァァァ…'], happy:'もっとほめろ！', refuse:'イヤだ！', rest:'眠くなってきたぞ〜' }
+};
+const touchLineIndex = {};
+function characterReaction(kind='touch') {
+  const lines=characterLines[state.character];
+  if(!lines)return false;
+  const index=touchLineIndex[state.character]||0;
+  const text=kind==='touch'?lines.touch[index%lines.touch.length]:lines[kind];
+  if(kind==='touch')touchLineIndex[state.character]=index+1;
+  setSpeech(text);stopVoice();
+  if(state.sound)speakReaction(text);
+  return true;
+}
 const characterVoices = Object.fromEntries(['chiikawa','hachiware','usagi','momonga'].map(id => [id, new Audio(`assets/voices/${id}.mp3`)]));
 let currentVoice = null;
 function stopVoice() {
@@ -107,6 +124,7 @@ function react(kind = 'excited') {
   motionTimer = setTimeout(() => pet.classList.remove(kind), kind === 'sleeping' ? 2400 : 950);
 }
 function chirp(text, label) {
+  if(characterReaction(text.includes('やだ')?'refuse':text.includes('…')?'rest':'happy'))return;
   setSpeech(label);
   if (!state.sound) return;
   stopVoice();
@@ -123,7 +141,9 @@ function speakReaction(text) {
   try {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ja-JP'; utterance.rate = 1.2; utterance.pitch = 1.5; utterance.volume = .9;
+      const voice=speechSynthesis.getVoices().find(item=>item.lang.toLowerCase().startsWith('ja'));
+      if(voice)utterance.voice=voice;
+      utterance.lang = 'ja-JP'; utterance.rate = state.character==='hachiware'?1:1.1; utterance.pitch = 1.5; utterance.volume = .9;
       speechSynthesis.speak(utterance);
     }
   } catch { /* Text reaction still works if a voice is unavailable. */ }
@@ -201,7 +221,7 @@ $('#petButton').addEventListener('click', () => {
   if (mealActive) return;
   if (state.lastPatPlay !== state.plays) state.mood = clamp(state.mood + 2);
   state.lastPatPlay = state.plays;
-  react(); chirp('うな！', '우나! 쓰다듬어줘서 좋아!'); persist();
+  react(); if(!characterReaction())chirp('うな！', 'うな！'); persist();
 });
 $('#soundButton').addEventListener('click', () => {
   state.sound = !state.sound;
@@ -338,15 +358,16 @@ $('#characterSelect').addEventListener('change', (event) => {
 });
 function selectCharacter(id) {
   if (!characters.some(([,key])=>key===id) || mealActive || activeGame) return;
+  stopVoice();
   if(typeof endPartyDance==='function')endPartyDance();
   if(typeof selectedDecor!=='undefined')selectedDecor=-1;
   state.rooms[state.character] = sanitizeRoom(state.room);
   state.character = id;
   state.room = sanitizeRoom(state.rooms[id]);
-  setSpeech(`${characterName()}와 함께!`); persist();
+  setSpeech(characterLines[id]?.touch[0]||`${characterName()}와 함께!`); persist();
   $('#roomLinkBox').hidden = true;
 }
 
 render();
-setSpeech(state.fullness < 25 ? '배고파… 밥 줘…' : state.clean < 50 ? '토벌 다녀와서 꼬질꼬질…' : '같이 놀자!');
+setSpeech(characterLines[state.character]?.touch[0]||(state.fullness < 25 ? '배고파… 밥 줘…' : state.clean < 50 ? '토벌 다녀와서 꼬질꼬질…' : '같이 놀자!'));
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
