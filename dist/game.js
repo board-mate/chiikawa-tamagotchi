@@ -69,6 +69,12 @@ let activeGame = null;
 let toastTimer;
 let motionTimer;
 let mealActive = false;
+const characterVoices = Object.fromEntries(['chiikawa','hachiware','usagi','momonga'].map(id => [id, new Audio(`assets/voices/${id}.mp3`)]));
+let currentVoice = null;
+function stopVoice() {
+  if (currentVoice) { currentVoice.pause(); currentVoice.currentTime = 0; currentVoice = null; }
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+}
 
 function persist() {
   state.rooms ||= {};
@@ -103,11 +109,21 @@ function react(kind = 'excited') {
 function chirp(text, label) {
   setSpeech(label);
   if (!state.sound) return;
+  stopVoice();
+  const clip = characterVoices[state.character];
+  if (clip) {
+    currentVoice = clip;
+    clip.currentTime = 0;
+    clip.play().catch(() => speakReaction(text));
+    return;
+  }
+  speakReaction(text);
+}
+function speakReaction(text) {
   try {
     if ('speechSynthesis' in window) {
-      speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ja-JP'; utterance.rate = 1.45; utterance.pitch = 1.7; utterance.volume = .7;
+      utterance.lang = 'ja-JP'; utterance.rate = 1.2; utterance.pitch = 1.5; utterance.volume = .9;
       speechSynthesis.speak(utterance);
     }
   } catch { /* Text reaction still works if a voice is unavailable. */ }
@@ -141,6 +157,7 @@ function render() {
   if(document.readyState!=='loading')window.renderVillage?.();
 }
 function showScreen(id) {
+  if(typeof endPartyDance==='function')endPartyDance();
   if(id!=='villageScreen'&&typeof stopVillageWalk==='function')stopVillageWalk();
   $$('.screen').forEach((node) => node.classList.toggle('active', node.id === id));
   $$('[data-screen]').forEach((node) => node.classList.toggle('active', node.dataset.screen === id));
@@ -188,7 +205,7 @@ $('#petButton').addEventListener('click', () => {
 });
 $('#soundButton').addEventListener('click', () => {
   state.sound = !state.sound;
-  if (!state.sound && 'speechSynthesis' in window) speechSynthesis.cancel();
+  if (!state.sound) { stopVoice(); if (typeof endPartyDance === 'function') endPartyDance(); }
   showToast(state.sound ? '소리를 켰어요.' : '소리를 껐어요.'); persist();
 });
 
