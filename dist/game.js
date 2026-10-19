@@ -180,7 +180,9 @@ function render() {
   }
   updateDirt();
   $('#world').classList.toggle('messy', state.clean < 70);
-  $('#soundButton').textContent = state.sound ? '♪' : '♩';
+  $('#soundButton').textContent = state.sound ? '🔊' : '🔇';
+  $('#soundButton').setAttribute('aria-pressed',String(state.sound));
+  $('#soundButton').title = state.sound ? '소리 켜짐' : '소리 꺼짐';
   $('#soundButton').setAttribute('aria-label', state.sound ? '소리 끄기' : '소리 켜기');
   $('#characterSelect').value = state.character;
   window.renderRoom?.();
