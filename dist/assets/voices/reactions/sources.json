@@ -1,0 +1,98 @@
+[
+  {
+    "file": "chiikawa-wa.mp3",
+    "source": "https://www.youtube.com/watch?v=pbQQAwSQUX4",
+    "start": 22.45,
+    "end": 24.4,
+    "language": "ja",
+    "caption": "ワ… ワ…"
+  },
+  {
+    "file": "chiikawa-haa.mp3",
+    "source": "https://www.youtube.com/watch?v=pbQQAwSQUX4",
+    "start": 25.15,
+    "end": 26.25,
+    "language": "ja",
+    "caption": "ハァ〜"
+  },
+  {
+    "file": "chiikawa-ei.mp3",
+    "source": "https://www.youtube.com/watch?v=FtVvbHdiabw",
+    "start": 1.85,
+    "end": 2.55,
+    "language": "ja",
+    "caption": "エイ！"
+  },
+  {
+    "file": "hachiware-nantoka.mp3",
+    "source": "https://www.youtube.com/watch?v=Wy7y5umGTb8",
+    "start": 63.2,
+    "end": 64.55,
+    "language": "ja",
+    "caption": "なんとかなれーッ！"
+  },
+  {
+    "file": "hachiware-tabeyo.mp3",
+    "source": "https://www.youtube.com/watch?v=EfQmbiX1-OM",
+    "start": 65.95,
+    "end": 67.2,
+    "language": "ja",
+    "caption": "一緒に食べよ！"
+  },
+  {
+    "file": "hachiware-katta.mp3",
+    "source": "https://www.youtube.com/watch?v=EfQmbiX1-OM",
+    "start": 64.65,
+    "end": 65.8,
+    "language": "ja",
+    "caption": "買っちゃった！"
+  },
+  {
+    "file": "usagi-yaha.mp3",
+    "source": "https://www.youtube.com/watch?v=jgYVHsjXrIA",
+    "start": 1.12,
+    "end": 2.0,
+    "language": "ja",
+    "caption": "ヤハ！！"
+  },
+  {
+    "file": "usagi-jump.mp3",
+    "source": "https://www.youtube.com/watch?v=jgYVHsjXrIA",
+    "start": 6.35,
+    "end": 7.95,
+    "language": "ja",
+    "caption": "プルャ〜"
+  },
+  {
+    "file": "usagi-ura.mp3",
+    "source": "https://www.youtube.com/watch?v=jgYVHsjXrIA",
+    "start": 30.3,
+    "end": 33.0,
+    "language": "ja",
+    "caption": "ウラ〜"
+  },
+  {
+    "file": "momonga-yokose.mp3",
+    "source": "https://www.youtube.com/watch?v=esd0x2Ai7J8",
+    "start": 159.0,
+    "end": 160.65,
+    "language": "ja",
+    "caption": "よこせ！ それ！"
+  },
+  {
+    "file": "momonga-comfort.mp3",
+    "source": "https://www.youtube.com/watch?v=esd0x2Ai7J8",
+    "start": 13.3,
+    "end": 14.45,
+    "language": "ja",
+    "caption": "なぐさめろ！"
+  },
+  {
+    "file": "momonga-praise.mp3",
+    "source": "https://www.youtube.com/watch?v=esd0x2Ai7J8",
+    "start": 112.35,
+    "end": 113.85,
+    "language": "ja",
+    "caption": "見て、ほめろ！"
+  }
+]

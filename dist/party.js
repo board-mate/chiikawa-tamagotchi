@@ -15,7 +15,7 @@ function startPartyDance() {
   if(mealActive||activeGame)return;
   if(!partyCharacters.includes(state.character)){showToast('치이카와·하치와레·우사기의 파자마 파티예요.');return;}
   if(outfitId(state.worn?.[state.character])!=='party'){showToast('파자마 파티 일체복을 입고 춤춰요!');$('.closet').open=true;return;}
-  stopVillageWalk();partyDanceStep=0;
+  stopVillageWalk();stopVoice();partyDanceStep=0;
   const character=state.character,frames=[1,0,2,0,3,0,2,0];
   $('#petButton').classList.add('party-dancing');$('#villageActor').classList.add('party-dancing');
   $('#danceButton').textContent='■ 춤 멈추기';setSpeech('우~와와~♪');

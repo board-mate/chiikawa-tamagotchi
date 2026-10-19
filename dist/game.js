@@ -79,19 +79,40 @@ const touchLineIndex = {};
 function characterReaction(kind='touch') {
   const lines=characterLines[state.character];
   if(!lines)return false;
-  const index=touchLineIndex[state.character]||0;
-  const text=kind==='touch'?lines.touch[index%lines.touch.length]:lines[kind];
-  if(kind==='touch')touchLineIndex[state.character]=index+1;
-  setSpeech(text);stopVoice();
-  if(state.sound)speakReaction(text);
+  const key=state.character+':'+kind;
+  const index=touchLineIndex[key]||0;
+  const recordings=(globalThis.VOICE_CLIPS?.[state.character]||[]).filter(clip=>clip.contexts.includes(kind));
+  const choices=kind==='touch'?[...recordings,...lines.touch.filter(text=>!recordings.some(clip=>clip.text===text)).map(text=>({text}))]:recordings;
+  const choice=choices[index%choices.length];
+  const recording=choice?.src?choice:null;
+  const text=choice?.text||lines[kind]||lines.touch[0];
+  touchLineIndex[key]=index+1;
+  setSpeech(text);playReactionVoice(recording,text);
   return true;
 }
-const characterVoices = Object.fromEntries(['chiikawa','hachiware','usagi','momonga'].map(id => [id, new Audio(`assets/voices/${id}.mp3`)]));
 let currentVoice = null;
+let voiceRequest=0;
+function playReactionVoice(recording,text) {
+  stopVoice();
+  if(!state.sound)return;
+  if(!recording){speakReaction(text);return;}
+  const request=voiceRequest;
+  const clip=new Audio(recording.src);
+  currentVoice=clip;
+  clip.volume=.85;
+  clip.addEventListener('ended',()=>{if(currentVoice===clip)currentVoice=null;},{once:true});
+  clip.play().catch(()=>{
+    if(request!==voiceRequest||!state.sound||document.hidden)return;
+    currentVoice=null;
+    speakReaction(text);
+  });
+}
 function stopVoice() {
+  voiceRequest++;
   if (currentVoice) { currentVoice.pause(); currentVoice.currentTime = 0; currentVoice = null; }
   if ('speechSynthesis' in window) speechSynthesis.cancel();
 }
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopVoice();});
 
 function persist() {
   state.rooms ||= {};
@@ -126,16 +147,7 @@ function react(kind = 'excited') {
 function chirp(text, label) {
   if(characterReaction(text.includes('やだ')?'refuse':text.includes('…')?'rest':'happy'))return;
   setSpeech(label);
-  if (!state.sound) return;
-  stopVoice();
-  const clip = characterVoices[state.character];
-  if (clip) {
-    currentVoice = clip;
-    clip.currentTime = 0;
-    clip.play().catch(() => speakReaction(text));
-    return;
-  }
-  speakReaction(text);
+  playReactionVoice(null,text);
 }
 function speakReaction(text) {
   try {
